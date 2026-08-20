@@ -131,6 +131,29 @@ button:focus-visible { outline: 4px solid white; outline-offset: 3px; }
 .tagline { margin: 16px 0 14px; color: #e5fdff; font-size: clamp(17px, 2.4vw, 26px); font-weight: 1000; }
 .tagline b { color: var(--yellow); }
 
+.nine-groups {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin: 9px auto 12px;
+}
+.nine-groups span {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 2px solid white;
+  border-radius: 50%;
+  color: #17105c;
+  background: var(--yellow);
+  box-shadow: 0 3px 0 #ad5d08;
+  font-size: 12px;
+  font-weight: 1000;
+}
+.nine-groups span:nth-child(3n+2) { background: var(--cyan); box-shadow-color: #1287a1; }
+.nine-groups span:nth-child(3n) { background: #6ff0a7; box-shadow-color: #168b50; }
+
 .difficulty {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -356,6 +379,42 @@ kbd { display: inline-grid; place-items: center; min-width: 29px; height: 27px; 
 .camera-setup.playing .body-cursor { width: 42px; height: 42px; border-width: 4px; box-shadow: 0 0 0 2px #25147cc7, 0 0 14px #ffe45cb8; }
 .camera-setup.playing .body-cursor i { inset: 13px; box-shadow: 0 0 0 2px white; }
 
+.wheel-screen { background: linear-gradient(145deg, #221171ed, #0c6b9bed); }
+.wheel-card,
+.ranking-card {
+  width: min(1050px, 96vw);
+  padding: clamp(16px, 2.6vw, 30px);
+  border: 6px solid white;
+  border-radius: 32px;
+  background: linear-gradient(150deg, #5738dc, #21116f);
+  box-shadow: 0 13px 0 #10094d, 0 24px 50px #0705219c;
+  text-align: center;
+}
+.wheel-card h2,
+.ranking-card h2 { margin: 0 0 12px; color: var(--yellow); font-size: clamp(34px, 6vw, 67px); line-height: .95; text-shadow: 0 5px 0 #17105f; }
+.wheel-layout { display: grid; grid-template-columns: minmax(300px, 1.2fr) minmax(260px, .8fr); gap: clamp(14px, 3vw, 34px); align-items: center; }
+.wheel-wrap { position: relative; width: min(56vh, 510px, 48vw); aspect-ratio: 1; margin: 0 auto; }
+#groupWheel {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: 8px solid white;
+  border-radius: 50%;
+  background: #17105c;
+  box-shadow: 0 10px 0 #10094d, 0 16px 35px #08052d99;
+  transition: transform 4.4s cubic-bezier(.12,.72,.08,1);
+}
+.wheel-pointer { position: absolute; z-index: 4; left: 50%; top: -18px; transform: translateX(-50%); color: var(--yellow); font-size: 54px; line-height: 1; text-shadow: 0 4px 0 #8b4212, 0 0 4px white; }
+.wheel-hub { position: absolute; z-index: 3; left: 50%; top: 50%; display: grid; place-items: center; width: 72px; height: 72px; transform: translate(-50%, -50%); border: 6px solid white; border-radius: 50%; color: white; background: #17105c; box-shadow: 0 5px 0 #09062f; font-size: 38px; font-weight: 1000; }
+.wheel-side { min-width: 0; }
+.wheel-status { min-height: 55px; margin: 0 0 12px; color: white; font-size: clamp(18px, 2.6vw, 29px); font-weight: 1000; }
+.remaining-groups { display: flex; justify-content: center; gap: 7px; flex-wrap: wrap; margin: 12px auto 20px; }
+.remaining-groups span { min-width: 52px; padding: 7px 8px; border: 3px solid white; border-radius: 12px; color: #17105c; font-size: 13px; font-weight: 1000; box-shadow: 0 4px 0 #10094d; }
+.wheel-side .primary-button { min-width: min(300px, 75vw); }
+.wheel-continue { color: #133b21; background: linear-gradient(#8effb9, #31dc83); box-shadow-color: #0d814a; }
+.wheel-spinning .wheel-status { color: var(--yellow); animation: pulseText .62s ease-in-out infinite alternate; }
+@keyframes pulseText { to { transform: scale(1.05); } }
+
 .hud {
   position: absolute;
   z-index: 25;
@@ -368,6 +427,21 @@ kbd { display: inline-grid; place-items: center; min-width: 29px; height: 27px; 
   align-items: start;
   pointer-events: none;
 }
+
+.tournament-hud {
+  position: absolute;
+  z-index: 26;
+  left: 50%;
+  top: max(98px, calc(env(safe-area-inset-top) + 92px));
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  pointer-events: none;
+}
+.tournament-hud > * { padding: 5px 10px; border: 2px solid white; border-radius: 10px; color: white; background: #15104fcf; box-shadow: 0 3px 0 #09062e; font-size: clamp(10px, 1.25vw, 13px); font-weight: 1000; }
+.tournament-hud strong { color: var(--yellow); background: #4e28c8e8; }
 
 .hud-box,
 .question-card {
@@ -484,11 +558,24 @@ kbd { display: inline-grid; place-items: center; min-width: 29px; height: 27px; 
 .final-score span { font-size: 30px; }
 .final-score strong { color: var(--yellow); font-size: 62px; }
 .final-score small { color: #c8f8ff; font-weight: 900; }
-.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin: 14px 0 24px; }
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 9px; margin: 14px 0 16px; }
 .stats-grid div { padding: 12px 7px; border: 2px solid #ffffff79; border-radius: 15px; background: #16105d; }
 .stats-grid strong { display: block; color: var(--yellow); font-size: clamp(24px, 4vw, 38px); }
 .stats-grid span { font-size: 12px; font-weight: 900; }
 .text-button { display: block; margin: 17px auto 0; padding: 8px 15px; border: 0; color: #c9f8ff; background: transparent; font-weight: 900; text-decoration: underline; cursor: pointer; }
+.result-standing { margin: 0 0 18px; color: #c9f8ff; font-size: 15px; font-weight: 900; }
+
+.ranking-screen { background: linear-gradient(145deg, #1c126ce8, #097d82ed); }
+.ranking-card { width: min(860px, 96vw); }
+.trophy-burst { font-size: clamp(54px, 9vw, 92px); animation: trophyFloat 1.2s ease-in-out infinite alternate; }
+@keyframes trophyFloat { to { transform: translateY(-8px) rotate(4deg); } }
+.winner-banner { margin: 13px auto 17px; padding: 13px 20px; border: 4px solid white; border-radius: 18px; color: #3b2500; background: linear-gradient(#fff47b, #ffbd2d); box-shadow: 0 6px 0 #a95b0c; font-size: clamp(24px, 4.3vw, 44px); font-weight: 1000; }
+.ranking-list { display: grid; gap: 7px; max-height: min(47vh, 390px); margin: 0 auto 20px; overflow: auto; padding: 3px 5px 8px; }
+.rank-row { display: grid; grid-template-columns: 48px minmax(100px, 1fr) 85px 80px 85px; gap: 8px; align-items: center; padding: 9px 12px; border: 2px solid #ffffff70; border-radius: 13px; background: #141055dc; font-size: 13px; font-weight: 900; }
+.rank-row:first-child { color: #312000; border-color: white; background: linear-gradient(90deg, #ffe257, #ffb52e); box-shadow: 0 5px 0 #94500c; }
+.rank-number { font-size: 22px; }
+.rank-group { text-align: left; font-size: 17px; }
+.rank-row small { display: block; font-size: 9px; opacity: .8; }
 
 @media (max-width: 700px) {
   .hud { grid-template-columns: 78px 1fr 78px; gap: 6px; left: 5px; right: 5px; top: 5px; }
@@ -505,6 +592,14 @@ kbd { display: inline-grid; place-items: center; min-width: 29px; height: 27px; 
   .level span { grid-row: 1 / 3; text-align: center; }
   .logo-orbit { display: none; }
   .camera-setup.playing { width: min(30vw, 205px); }
+  .wheel-layout { grid-template-columns: 1fr; }
+  .wheel-wrap { width: min(43vh, 76vw); }
+  .wheel-side { margin-top: 5px; }
+  .remaining-groups { margin: 7px auto 12px; }
+  .tournament-hud { top: 86px; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .rank-row { grid-template-columns: 40px minmax(85px, 1fr) 63px 61px; }
+  .rank-row > :last-child { display: none; }
 }
 
 @media (orientation: portrait) {
@@ -529,6 +624,17 @@ kbd { display: inline-grid; place-items: center; min-width: 29px; height: 27px; 
   .camera-view { width: min(610px, 78vw); }
   .camera-status { margin: 8px 0 5px; }
   .camera-setup.playing { width: min(22vw, 220px); }
+  .wheel-card { padding: 13px 22px; }
+  .wheel-card h2 { margin-bottom: 5px; font-size: 38px; }
+  .wheel-wrap { width: min(51vh, 390px); }
+  .wheel-status { min-height: 42px; margin-bottom: 5px; font-size: 19px; }
+  .remaining-groups { margin: 7px auto 12px; }
+  .ranking-card { padding: 12px 22px; }
+  .trophy-burst { font-size: 49px; }
+  .ranking-card h2 { font-size: 40px; }
+  .winner-banner { margin: 7px auto 10px; padding: 7px 14px; font-size: 24px; }
+  .ranking-list { max-height: 43vh; margin-bottom: 12px; }
+  .rank-row { padding: 6px 10px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -547,15 +653,24 @@ kbd { display: inline-grid; place-items: center; min-width: 29px; height: 27px; 
       <div class="question-card"><small id="phaseLabel">READ</small><strong id="questionText">I ___ ready.</strong><div id="approachBar" class="approach-bar"><i></i></div></div>
       <div class="hud-box lives-box"><span aria-hidden="true">❤️</span><small>Lives</small><strong id="livesValue">3</strong></div>
     </header>
+    <div id="tournamentHud" class="tournament-hud hidden" aria-live="polite">
+      <strong id="currentGroupHud">GROUP —</strong>
+      <span id="questionProgress">QUESTION 1 / 5</span>
+      <span id="groupsProgress">PLAYED 0 / 9</span>
+    </div>
     <div id="laneAnnouncer" class="sr-only" aria-live="polite">Center lane</div>
     <div id="gateAnnouncer" class="sr-only">Left AM, Center IS, Right ARE</div>
 
     <section id="startScreen" class="overlay start-screen">
       <div class="start-card">
         <div class="logo-orbit"><span>⭐</span><i></i><b>V</b></div>
-        <p class="eyebrow">ENGLISH RUNNER</p>
+        <p class="eyebrow">9-GROUP BODY TOURNAMENT</p>
         <h1>VERB TO BE<br><span>HUNT</span></h1>
-        <p class="tagline">Run <b>•</b> Think <b>•</b> Choose!</p>
+        <p class="tagline">Spin <b>•</b> Run <b>•</b> Score!</p>
+
+        <div class="nine-groups" aria-label="Nine competing groups">
+          <span>G1</span><span>G2</span><span>G3</span><span>G4</span><span>G5</span><span>G6</span><span>G7</span><span>G8</span><span>G9</span>
+        </div>
 
         <div class="difficulty" role="group" aria-label="Select difficulty">
           <button class="level selected" data-level="easy"><span>🌱</span><b>EASY</b><small>Pronouns</small></button>
@@ -569,8 +684,29 @@ kbd { display: inline-grid; place-items: center; min-width: 29px; height: 27px; 
           <div><span class="body-move-icon">🧍 ➡️</span><span>MOVE RIGHT</span></div>
         </div>
 
-        <button id="startButton" class="primary-button">OPEN CAMERA &amp; START <span>📷</span></button>
-        <p class="safety-note">ขยับทั้งตัวไปทางซ้าย กลาง หรือขวา เพื่อเลือก AM • IS • ARE</p>
+        <button id="startButton" class="primary-button">START 9-GROUP TOURNAMENT <span>🎡</span></button>
+        <p class="safety-note">กลุ่มละ 5 ข้อ • คะแนนสูงสุดชนะ • หากคะแนนเท่ากันใช้จำนวนชีวิตและเวลาเป็นตัวตัดสิน</p>
+      </div>
+    </section>
+
+    <section id="wheelScreen" class="overlay wheel-screen hidden" aria-live="polite">
+      <div class="wheel-card">
+        <p class="eyebrow">WHO PLAYS NEXT?</p>
+        <h2>SPIN THE WHEEL!</h2>
+        <div class="wheel-layout">
+          <div class="wheel-wrap">
+            <div class="wheel-pointer" aria-hidden="true">▼</div>
+            <canvas id="groupWheel" width="600" height="600" aria-label="Random group wheel"></canvas>
+            <div class="wheel-hub" aria-hidden="true">V</div>
+          </div>
+          <div class="wheel-side">
+            <p id="wheelStatus" class="wheel-status">หมุนวงล้อเพื่อเลือกกลุ่มแรก</p>
+            <div id="remainingGroups" class="remaining-groups"></div>
+            <button id="spinWheelButton" class="primary-button" type="button">SPIN! <span>🎡</span></button>
+            <button id="wheelContinueButton" class="primary-button wheel-continue hidden" type="button">OPEN CAMERA <span>📷</span></button>
+            <button id="cancelTournamentButton" class="text-button" type="button">End tournament</button>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -611,16 +747,29 @@ kbd { display: inline-grid; place-items: center; min-width: 29px; height: 27px; 
     <section id="gameOverScreen" class="overlay hidden">
       <div class="result-card">
         <div class="result-icon">🏁</div>
-        <p class="eyebrow">RUN COMPLETE</p>
-        <h2>GAME OVER</h2>
+        <p id="resultGroupName" class="eyebrow">GROUP RESULT</p>
+        <h2 id="resultTitle">RUN COMPLETE</h2>
         <div class="final-score"><span>⭐</span><strong id="finalScore">0</strong><small>points</small></div>
         <div class="stats-grid">
           <div><strong id="correctCount">0</strong><span>Correct</span></div>
           <div><strong id="incorrectCount">0</strong><span>Incorrect</span></div>
           <div><strong id="accuracyValue">0%</strong><span>Accuracy</span></div>
+          <div><strong id="timeValue">0:00</strong><span>Time</span></div>
         </div>
-        <button id="restartButton" class="primary-button">RESTART GAME <span>↻</span></button>
-        <button id="changeLevelButton" class="text-button">Change difficulty</button>
+        <p id="resultStanding" class="result-standing">Provisional ranking</p>
+        <button id="restartButton" class="primary-button">SPIN FOR NEXT GROUP <span>🎡</span></button>
+        <button id="changeLevelButton" class="text-button">End tournament</button>
+      </div>
+    </section>
+
+    <section id="rankingScreen" class="overlay ranking-screen hidden">
+      <div class="ranking-card">
+        <div class="trophy-burst">🏆</div>
+        <p class="eyebrow">9-GROUP TOURNAMENT COMPLETE</p>
+        <h2>FINAL RANKING</h2>
+        <div id="winnerBanner" class="winner-banner">GROUP 1 WINS!</div>
+        <div id="rankingList" class="ranking-list" aria-label="Final group ranking"></div>
+        <button id="newTournamentButton" class="primary-button" type="button">NEW TOURNAMENT <span>↻</span></button>
       </div>
     </section>
 
@@ -711,6 +860,18 @@ window.VERB_TO_BE_QUESTIONS = [
   const gateAnnouncer = document.getElementById('gateAnnouncer');
   const startScreen = document.getElementById('startScreen');
   const startButton = document.getElementById('startButton');
+  const tournamentHud = document.getElementById('tournamentHud');
+  const currentGroupHud = document.getElementById('currentGroupHud');
+  const questionProgress = document.getElementById('questionProgress');
+  const groupsProgress = document.getElementById('groupsProgress');
+  const wheelScreen = document.getElementById('wheelScreen');
+  const groupWheel = document.getElementById('groupWheel');
+  const wheelContext = groupWheel.getContext('2d');
+  const wheelStatus = document.getElementById('wheelStatus');
+  const remainingGroups = document.getElementById('remainingGroups');
+  const spinWheelButton = document.getElementById('spinWheelButton');
+  const wheelContinueButton = document.getElementById('wheelContinueButton');
+  const cancelTournamentButton = document.getElementById('cancelTournamentButton');
   const feedback = document.getElementById('feedback');
   const feedbackTitle = document.getElementById('feedbackTitle');
   const completeSentence = document.getElementById('completeSentence');
@@ -720,8 +881,16 @@ window.VERB_TO_BE_QUESTIONS = [
   const correctCount = document.getElementById('correctCount');
   const incorrectCount = document.getElementById('incorrectCount');
   const accuracyValue = document.getElementById('accuracyValue');
+  const timeValue = document.getElementById('timeValue');
+  const resultGroupName = document.getElementById('resultGroupName');
+  const resultTitle = document.getElementById('resultTitle');
+  const resultStanding = document.getElementById('resultStanding');
   const restartButton = document.getElementById('restartButton');
   const changeLevelButton = document.getElementById('changeLevelButton');
+  const rankingScreen = document.getElementById('rankingScreen');
+  const winnerBanner = document.getElementById('winnerBanner');
+  const rankingList = document.getElementById('rankingList');
+  const newTournamentButton = document.getElementById('newTournamentButton');
   const pauseButton = document.getElementById('pauseButton');
   const pauseScreen = document.getElementById('pauseScreen');
   const resumeButton = document.getElementById('resumeButton');
@@ -741,6 +910,9 @@ window.VERB_TO_BE_QUESTIONS = [
   const LANE_COUNT = 3;
   const START_LIVES = 3;
   const POINTS_PER_CORRECT = 10;
+  const GROUP_COUNT = 9;
+  const QUESTIONS_PER_GROUP = 5;
+  const WHEEL_SPIN_MS = 4400;
   const READ_SECONDS = 3.2;
   const APPROACH_SECONDS = 7.4;
   const FEEDBACK_SECONDS = 1.45;
@@ -769,6 +941,17 @@ window.VERB_TO_BE_QUESTIONS = [
     yellow: '#ffe052'
   };
 
+  const GROUP_COLORS = [
+    '#ff666f', '#31d7ef', '#ffd84f', '#62e39a', '#a77cff',
+    '#ff9f43', '#4f8cff', '#ff71c8', '#83df55'
+  ];
+  const GROUPS = Array.from({ length: GROUP_COUNT }, (_, index) => ({
+    id: index + 1,
+    name: `GROUP ${index + 1}`,
+    shortName: `G${index + 1}`,
+    color: GROUP_COLORS[index]
+  }));
+
   if (!Array.isArray(window.VERB_TO_BE_QUESTIONS) || !window.VERB_TO_BE_QUESTIONS.length) {
     throw new Error('Question bank not found. Load questions.js before game.js.');
   }
@@ -784,6 +967,9 @@ window.VERB_TO_BE_QUESTIONS = [
     lives: START_LIVES,
     correct: 0,
     incorrect: 0,
+    questionNumber: 0,
+    activeElapsed: 0,
+    resultRecorded: false,
     currentQuestion: null,
     questionDeck: [],
     lastQuestionId: null,
@@ -803,6 +989,16 @@ window.VERB_TO_BE_QUESTIONS = [
     shake: 0,
     particles: [],
     lastFrameAt: performance.now()
+  };
+
+  const tournament = {
+    active: false,
+    currentGroup: null,
+    remaining: [],
+    results: [],
+    spinning: false,
+    wheelRotation: 0,
+    spinToken: 0
   };
 
   let viewWidth = 0;
@@ -881,6 +1077,188 @@ window.VERB_TO_BE_QUESTIONS = [
     return question.sentence.replace('___', question.answer);
   }
 
+  function formatTime(seconds) {
+    const safeSeconds = Math.max(0, seconds || 0);
+    const minutes = Math.floor(safeSeconds / 60);
+    const remainder = (safeSeconds % 60).toFixed(1).padStart(4, '0');
+    return `${minutes}:${remainder}`;
+  }
+
+  function compareGroupResults(a, b) {
+    if (b.score !== a.score) return b.score - a.score;
+    if (b.lives !== a.lives) return b.lives - a.lives;
+    if (b.accuracy !== a.accuracy) return b.accuracy - a.accuracy;
+    return a.time - b.time;
+  }
+
+  function sortedGroupResults() {
+    return [...tournament.results].sort(compareGroupResults);
+  }
+
+  function renderRemainingGroups() {
+    remainingGroups.replaceChildren();
+    tournament.remaining.forEach((group) => {
+      const chip = document.createElement('span');
+      chip.textContent = group.shortName;
+      chip.style.background = group.color;
+      remainingGroups.appendChild(chip);
+    });
+  }
+
+  function drawGroupWheel(groups) {
+    const width = groupWheel.width;
+    const center = width / 2;
+    const radius = center - 13;
+    const count = Math.max(1, groups.length);
+    const arc = (Math.PI * 2) / count;
+    wheelContext.clearRect(0, 0, width, width);
+
+    groups.forEach((group, index) => {
+      const startAngle = -Math.PI / 2 + index * arc;
+      const endAngle = startAngle + arc;
+      wheelContext.beginPath();
+      wheelContext.moveTo(center, center);
+      wheelContext.arc(center, center, radius, startAngle, endAngle);
+      wheelContext.closePath();
+      wheelContext.fillStyle = group.color;
+      wheelContext.fill();
+      wheelContext.lineWidth = 7;
+      wheelContext.strokeStyle = 'white';
+      wheelContext.stroke();
+
+      const textAngle = startAngle + arc / 2;
+      wheelContext.save();
+      wheelContext.translate(center, center);
+      wheelContext.rotate(textAngle);
+      wheelContext.translate(radius * (count <= 2 ? 0.58 : 0.66), 0);
+      wheelContext.rotate(Math.PI / 2);
+      wheelContext.fillStyle = '#171044';
+      wheelContext.font = `1000 ${count >= 8 ? 32 : count >= 5 ? 39 : 49}px Arial Rounded MT Bold, Arial, sans-serif`;
+      wheelContext.textAlign = 'center';
+      wheelContext.textBaseline = 'middle';
+      wheelContext.fillText(group.shortName, 0, 0);
+      wheelContext.restore();
+    });
+  }
+
+  function showWheel() {
+    stopCameraStream();
+    game.mode = 'wheel';
+    startScreen.classList.add('hidden');
+    gameOverScreen.classList.add('hidden');
+    rankingScreen.classList.add('hidden');
+    cameraSetupScreen.classList.add('hidden');
+    cameraSetupScreen.classList.remove('playing');
+    hud.classList.add('hidden');
+    tournamentHud.classList.add('hidden');
+    pauseButton.classList.add('hidden');
+    feedback.classList.add('hidden');
+    wheelScreen.classList.remove('hidden', 'wheel-spinning');
+    wheelContinueButton.classList.add('hidden');
+    spinWheelButton.classList.remove('hidden');
+    spinWheelButton.disabled = false;
+    wheelStatus.textContent = tournament.results.length
+      ? `เหลืออีก ${tournament.remaining.length} กลุ่ม • หมุนเพื่อเลือกกลุ่มต่อไป`
+      : 'หมุนวงล้อเพื่อเลือกกลุ่มแรก';
+    renderRemainingGroups();
+    drawGroupWheel(tournament.remaining);
+    tournament.wheelRotation = 0;
+    groupWheel.style.transition = 'none';
+    groupWheel.style.transform = 'rotate(0rad)';
+    void groupWheel.offsetWidth;
+    groupWheel.style.transition = '';
+  }
+
+  function beginTournament() {
+    tournament.active = true;
+    tournament.currentGroup = null;
+    tournament.remaining = GROUPS.map((group) => ({ ...group }));
+    tournament.results = [];
+    tournament.spinning = false;
+    tournament.spinToken += 1;
+    showWheel();
+  }
+
+  function spinWheel() {
+    if (tournament.spinning || !tournament.remaining.length) return;
+    unlockAudio();
+    tournament.spinning = true;
+    const token = tournament.spinToken;
+    const selectedIndex = Math.floor(Math.random() * tournament.remaining.length);
+    const arc = (Math.PI * 2) / tournament.remaining.length;
+    const rotation = Math.PI * 2 * 6 - (selectedIndex + 0.5) * arc;
+    tournament.wheelRotation = rotation;
+    wheelScreen.classList.add('wheel-spinning');
+    spinWheelButton.disabled = true;
+    wheelStatus.textContent = 'กำลังสุ่มกลุ่มต่อไป…';
+    groupWheel.style.transform = `rotate(${rotation}rad)`;
+
+    setTimeout(() => {
+      if (!tournament.active || token !== tournament.spinToken) return;
+      const [selectedGroup] = tournament.remaining.splice(selectedIndex, 1);
+      tournament.currentGroup = selectedGroup;
+      tournament.spinning = false;
+      wheelScreen.classList.remove('wheel-spinning');
+      spinWheelButton.classList.add('hidden');
+      wheelContinueButton.classList.remove('hidden');
+      wheelContinueButton.innerHTML = `${selectedGroup.name} • OPEN CAMERA <span>📷</span>`;
+      wheelStatus.textContent = `🎉 ${selectedGroup.name} เตรียมตัวลงสนาม!`;
+      renderRemainingGroups();
+      playSuccessSound();
+    }, WHEEL_SPIN_MS + 80);
+  }
+
+  function endTournament() {
+    tournament.active = false;
+    tournament.spinning = false;
+    tournament.spinToken += 1;
+    tournament.currentGroup = null;
+    stopCameraStream();
+    game.mode = 'start';
+    wheelScreen.classList.add('hidden');
+    gameOverScreen.classList.add('hidden');
+    rankingScreen.classList.add('hidden');
+    cameraSetupScreen.classList.add('hidden');
+    hud.classList.add('hidden');
+    tournamentHud.classList.add('hidden');
+    pauseButton.classList.add('hidden');
+    startScreen.classList.remove('hidden');
+  }
+
+  function showFinalRanking() {
+    tournament.active = false;
+    game.mode = 'ranking';
+    gameOverScreen.classList.add('hidden');
+    wheelScreen.classList.add('hidden');
+    hud.classList.add('hidden');
+    tournamentHud.classList.add('hidden');
+    pauseButton.classList.add('hidden');
+    cameraSetupScreen.classList.add('hidden');
+    stopCameraStream();
+
+    const ranking = sortedGroupResults();
+    const winner = ranking[0];
+    winnerBanner.textContent = winner ? `🏆 ${winner.group.name} WINS!` : 'TOURNAMENT COMPLETE';
+    rankingList.replaceChildren();
+    ranking.forEach((result, index) => {
+      const row = document.createElement('div');
+      row.className = 'rank-row';
+      row.innerHTML = `
+        <span class="rank-number">${index + 1}</span>
+        <strong class="rank-group">${result.group.name}</strong>
+        <span><small>SCORE</small>${result.score}</span>
+        <span><small>LIVES</small>${result.lives}</span>
+        <span><small>TIME</small>${formatTime(result.time)}</span>`;
+      rankingList.appendChild(row);
+    });
+    rankingScreen.classList.remove('hidden');
+  }
+
+  function advanceTournament() {
+    if (tournament.remaining.length) showWheel();
+    else showFinalRanking();
+  }
+
   function resizeCanvas() {
     const rect = app.getBoundingClientRect();
     viewWidth = Math.max(320, rect.width);
@@ -925,21 +1303,31 @@ window.VERB_TO_BE_QUESTIONS = [
   // Game flow and score system
   // ---------------------------------------------------------------------------
   function startGame() {
+    if (!tournament.currentGroup) {
+      beginTournament();
+      return;
+    }
     unlockAudio();
     game.score = 0;
     game.lives = START_LIVES;
     game.correct = 0;
     game.incorrect = 0;
+    game.questionNumber = 0;
+    game.activeElapsed = 0;
+    game.resultRecorded = false;
     game.lastQuestionId = null;
     game.questionDeck = [];
     game.particles = [];
     game.shake = 0;
     game.worldOffset = 0;
     startScreen.classList.add('hidden');
+    wheelScreen.classList.add('hidden');
+    rankingScreen.classList.add('hidden');
     gameOverScreen.classList.add('hidden');
     feedback.classList.add('hidden');
     pauseScreen.classList.add('hidden');
     hud.classList.remove('hidden');
+    tournamentHud.classList.remove('hidden');
     pauseButton.classList.remove('hidden');
     cameraSetupScreen.classList.remove('hidden', 'camera-error', 'tracking-lost');
     cameraSetupScreen.classList.add('playing');
@@ -950,6 +1338,7 @@ window.VERB_TO_BE_QUESTIONS = [
   }
 
   function prepareQuestion() {
+    game.questionNumber = game.correct + game.incorrect + 1;
     game.currentQuestion = nextQuestion();
     game.gateOrder = shuffled(ANSWERS);
     game.correctLane = game.gateOrder.indexOf(game.currentQuestion.answer);
@@ -1003,7 +1392,8 @@ window.VERB_TO_BE_QUESTIONS = [
 
   function finishFeedback() {
     feedback.classList.add('hidden');
-    if (game.lives <= 0) {
+    const attempts = game.correct + game.incorrect;
+    if (game.lives <= 0 || attempts >= QUESTIONS_PER_GROUP) {
       showGameOver();
     } else {
       prepareQuestion();
@@ -1013,33 +1403,56 @@ window.VERB_TO_BE_QUESTIONS = [
   function showGameOver() {
     game.mode = 'gameover';
     hud.classList.add('hidden');
+    tournamentHud.classList.add('hidden');
     pauseButton.classList.add('hidden');
     cameraSetupScreen.classList.add('hidden');
     cameraSetupScreen.classList.remove('playing');
     stopCameraStream();
     const attempts = game.correct + game.incorrect;
     const accuracy = attempts ? Math.round((game.correct / attempts) * 100) : 0;
+
+    if (!game.resultRecorded && tournament.currentGroup) {
+      tournament.results.push({
+        group: { ...tournament.currentGroup },
+        score: game.score,
+        lives: game.lives,
+        correct: game.correct,
+        incorrect: game.incorrect,
+        accuracy,
+        time: game.activeElapsed,
+        completed: attempts >= QUESTIONS_PER_GROUP
+      });
+      game.resultRecorded = true;
+    }
+
+    const ranking = sortedGroupResults();
+    const currentPlace = ranking.findIndex((result) => result.group.id === tournament.currentGroup?.id) + 1;
+    resultGroupName.textContent = tournament.currentGroup ? `${tournament.currentGroup.name} RESULT` : 'GROUP RESULT';
+    resultTitle.textContent = attempts >= QUESTIONS_PER_GROUP ? 'RUN COMPLETE' : 'OUT OF LIVES';
     finalScore.textContent = String(game.score);
     correctCount.textContent = String(game.correct);
     incorrectCount.textContent = String(game.incorrect);
     accuracyValue.textContent = `${accuracy}%`;
+    timeValue.textContent = formatTime(game.activeElapsed);
+    resultStanding.textContent = `อันดับชั่วคราว ${currentPlace} จาก ${tournament.results.length} กลุ่มที่เล่นแล้ว`;
+    if (tournament.remaining.length) {
+      restartButton.innerHTML = 'SPIN FOR NEXT GROUP <span>🎡</span>';
+    } else {
+      restartButton.innerHTML = 'VIEW FINAL RANKING <span>🏆</span>';
+    }
     gameOverScreen.classList.remove('hidden');
   }
 
   function returnToStart() {
-    game.mode = 'start';
-    gameOverScreen.classList.add('hidden');
-    hud.classList.add('hidden');
-    pauseButton.classList.add('hidden');
-    cameraSetupScreen.classList.add('hidden');
-    cameraSetupScreen.classList.remove('playing', 'camera-error', 'tracking-lost');
-    stopCameraStream();
-    startScreen.classList.remove('hidden');
+    endTournament();
   }
 
   function updateHud() {
     scoreValue.textContent = String(game.score);
     livesValue.textContent = String(game.lives);
+    currentGroupHud.textContent = tournament.currentGroup?.name || 'GROUP —';
+    questionProgress.textContent = `QUESTION ${Math.min(game.questionNumber || 1, QUESTIONS_PER_GROUP)} / ${QUESTIONS_PER_GROUP}`;
+    groupsProgress.textContent = `PLAYED ${tournament.results.length} / ${GROUP_COUNT}`;
   }
 
   function pauseGame() {
@@ -1347,6 +1760,10 @@ window.VERB_TO_BE_QUESTIONS = [
 
   async function startCameraGame() {
     if (camera.starting) return;
+    if (!tournament.active || !tournament.currentGroup) {
+      showWheel();
+      return;
+    }
     unlockAudio();
     const token = camera.calibrationToken + 1;
     camera.calibrationToken = token;
@@ -1354,6 +1771,8 @@ window.VERB_TO_BE_QUESTIONS = [
     camera.tracked = false;
     camera.samples = [];
     startScreen.classList.add('hidden');
+    wheelScreen.classList.add('hidden');
+    rankingScreen.classList.add('hidden');
     gameOverScreen.classList.add('hidden');
     cameraSetupScreen.classList.remove('hidden', 'playing', 'camera-error', 'tracking-lost');
     retryCameraButton.classList.add('hidden');
@@ -1382,8 +1801,18 @@ window.VERB_TO_BE_QUESTIONS = [
     stopCameraStream();
     cameraSetupScreen.classList.add('hidden');
     cameraSetupScreen.classList.remove('playing', 'camera-error', 'tracking-lost');
-    startScreen.classList.remove('hidden');
-    game.mode = 'start';
+    if (tournament.active && tournament.currentGroup) {
+      game.mode = 'wheel';
+      startScreen.classList.add('hidden');
+      wheelScreen.classList.remove('hidden');
+      spinWheelButton.classList.add('hidden');
+      wheelContinueButton.classList.remove('hidden');
+      wheelContinueButton.innerHTML = `${tournament.currentGroup.name} • OPEN CAMERA <span>📷</span>`;
+      wheelStatus.textContent = `${tournament.currentGroup.name} ยังไม่ได้เริ่มเล่น`;
+    } else {
+      startScreen.classList.remove('hidden');
+      game.mode = 'start';
+    }
   }
 
   // ---------------------------------------------------------------------------
@@ -1442,6 +1871,8 @@ window.VERB_TO_BE_QUESTIONS = [
       updateParticles(deltaSeconds);
       return;
     }
+
+    if (['reading', 'running'].includes(game.mode)) game.activeElapsed += deltaSeconds;
 
     if (game.mode === 'reading') {
       game.readRemaining -= deltaSeconds;
@@ -1921,9 +2352,13 @@ window.VERB_TO_BE_QUESTIONS = [
     });
   });
 
-  startButton.addEventListener('click', startCameraGame);
-  restartButton.addEventListener('click', startCameraGame);
+  startButton.addEventListener('click', beginTournament);
+  spinWheelButton.addEventListener('click', spinWheel);
+  wheelContinueButton.addEventListener('click', startCameraGame);
+  cancelTournamentButton.addEventListener('click', endTournament);
+  restartButton.addEventListener('click', advanceTournament);
   changeLevelButton.addEventListener('click', returnToStart);
+  newTournamentButton.addEventListener('click', beginTournament);
   retryCameraButton.addEventListener('click', startCameraGame);
   cancelCameraButton.addEventListener('click', cancelCameraSetup);
   flipCameraButton.addEventListener('click', () => {
@@ -1956,6 +2391,8 @@ window.VERB_TO_BE_QUESTIONS = [
       lives: game.lives,
       correct: game.correct,
       incorrect: game.incorrect,
+      questionNumber: game.questionNumber,
+      activeElapsed: Number(game.activeElapsed.toFixed(2)),
       questionId: game.currentQuestion?.id || null,
       question: game.currentQuestion?.sentence || null,
       answer: game.currentQuestion?.answer || null,
@@ -1970,6 +2407,17 @@ window.VERB_TO_BE_QUESTIONS = [
         baselineX: Number(camera.baselineX.toFixed(3)),
         displayX: Number(camera.displayX.toFixed(3)),
         lane: camera.lane
+      },
+      tournament: {
+        active: tournament.active,
+        currentGroup: tournament.currentGroup?.id || null,
+        remaining: tournament.remaining.map((group) => group.id),
+        results: sortedGroupResults().map((result) => ({
+          group: result.group.id,
+          score: result.score,
+          lives: result.lives,
+          time: Number(result.time.toFixed(2))
+        }))
       }
     }),
     questionCount: (level) => questionsForLevel(level).length,
