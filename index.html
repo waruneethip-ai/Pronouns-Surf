@@ -6,7 +6,369 @@
   <meta name="theme-color" content="#321681">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <title>Verb to Be Hunt</title>
-  <link rel="stylesheet" href="style.css">
+  <style>
+:root {
+  --ink: #141244;
+  --purple: #5c36dc;
+  --deep-purple: #321681;
+  --yellow: #ffe452;
+  --orange: #ff8b2d;
+  --cyan: #42e4f5;
+  --green: #38dc8c;
+  --red: #ff4c63;
+  --paper: #fffdf6;
+  --safe-bottom: max(12px, env(safe-area-inset-bottom));
+}
+
+* { box-sizing: border-box; }
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: #11113f;
+  color: white;
+  font-family: "Arial Rounded MT Bold", "Trebuchet MS", Tahoma, system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+button { font: inherit; }
+button:focus-visible { outline: 4px solid white; outline-offset: 3px; }
+.hidden { display: none !important; }
+.sr-only { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; margin: -1px !important; overflow: hidden !important; clip: rect(0, 0, 0, 0) !important; white-space: nowrap !important; border: 0 !important; }
+
+.app {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 100svh;
+  overflow: hidden;
+  background: linear-gradient(#32c8f5, #8eeeff);
+  touch-action: none;
+}
+
+#gameCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+}
+
+.overlay {
+  position: absolute;
+  z-index: 50;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: max(18px, env(safe-area-inset-top)) 18px var(--safe-bottom);
+  overflow: auto;
+  background: linear-gradient(155deg, #1b156ad9, #120c47e8);
+  backdrop-filter: blur(7px);
+}
+
+.start-screen {
+  background:
+    radial-gradient(circle at 12% 14%, #fff07f 0 3px, transparent 4px),
+    radial-gradient(circle at 87% 20%, #fff 0 2px, transparent 3px),
+    radial-gradient(circle at 75% 82%, #77f6df 0 4px, transparent 5px),
+    linear-gradient(145deg, #2a91e9dc, #4d20bfec 58%, #26127aee);
+}
+
+.start-card,
+.result-card {
+  position: relative;
+  width: min(850px, 94vw);
+  padding: clamp(18px, 3vw, 34px);
+  border: 6px solid white;
+  border-radius: 34px;
+  background: linear-gradient(150deg, #5d3de4, #281789);
+  box-shadow: 0 14px 0 #151060, 0 24px 55px #09052a9c;
+  text-align: center;
+}
+
+.logo-orbit {
+  position: absolute;
+  left: 7%;
+  top: 7%;
+  width: 84px;
+  height: 84px;
+  display: grid;
+  place-items: center;
+  border: 5px solid #fff;
+  border-radius: 50%;
+  background: #22c6e9;
+  box-shadow: 0 7px 0 #11649d;
+}
+
+.logo-orbit b { font-size: 42px; text-shadow: 0 4px 0 #19408b; }
+.logo-orbit span { position: absolute; right: -13px; top: -10px; font-size: 25px; }
+.logo-orbit i { position: absolute; inset: -13px; border: 3px dashed #fff36e; border-radius: 50%; animation: orbit 8s linear infinite; }
+@keyframes orbit { to { transform: rotate(360deg); } }
+
+.eyebrow {
+  margin: 0 0 4px;
+  color: #baf8ff;
+  font-size: clamp(12px, 1.6vw, 17px);
+  font-weight: 1000;
+  letter-spacing: .14em;
+}
+
+.start-card h1,
+.result-card h2 {
+  margin: 0;
+  font-size: clamp(42px, 8vw, 88px);
+  line-height: .82;
+  letter-spacing: -.04em;
+  text-shadow: 0 7px 0 #17105f;
+}
+
+.start-card h1 span { color: var(--yellow); font-size: 1.08em; }
+.tagline { margin: 16px 0 14px; color: #e5fdff; font-size: clamp(17px, 2.4vw, 26px); font-weight: 1000; }
+.tagline b { color: var(--yellow); }
+
+.difficulty {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  max-width: 710px;
+  margin: 13px auto;
+}
+
+.level {
+  min-height: 82px;
+  padding: 9px;
+  border: 3px solid #ffffff91;
+  border-radius: 18px;
+  color: white;
+  background: #17115f;
+  cursor: pointer;
+  transition: transform .14s ease, border-color .14s ease, background .14s ease;
+}
+
+.level:hover { transform: translateY(-2px); }
+.level.selected { border-color: white; background: linear-gradient(#ffad35, #ee6c25); box-shadow: 0 6px 0 #9b391b; transform: translateY(-3px); }
+.level span { display: block; font-size: 23px; }
+.level b { display: block; font-size: clamp(16px, 2vw, 22px); }
+.level small { display: block; margin-top: 2px; font-size: clamp(10px, 1.2vw, 13px); opacity: .92; }
+
+.visual-instructions {
+  display: flex;
+  justify-content: center;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin: 15px auto;
+}
+
+.visual-instructions > div {
+  min-width: 148px;
+  padding: 8px 11px;
+  border: 2px solid #ffffff69;
+  border-radius: 14px;
+  background: #151056;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.visual-instructions span { display: block; }
+kbd { display: inline-grid; place-items: center; min-width: 29px; height: 27px; margin: 0 2px 3px; border: 2px solid white; border-radius: 7px; background: #603ee3; box-shadow: 0 3px 0 #181060; }
+.swipe-icon { height: 31px; font-size: 21px; }
+.gate-icon { height: 31px; color: var(--yellow); font-size: 16px; line-height: 29px; }
+
+.primary-button {
+  min-width: min(320px, 80vw);
+  padding: 14px 25px;
+  border: 0;
+  border-radius: 18px;
+  color: #442700;
+  background: linear-gradient(#fff46a, #ffb31f);
+  box-shadow: 0 7px 0 #ad5d08;
+  font-size: clamp(18px, 2.4vw, 26px);
+  font-weight: 1000;
+  cursor: pointer;
+}
+
+.primary-button:active { transform: translateY(5px); box-shadow: 0 2px 0 #ad5d08; }
+.safety-note { margin: 13px 0 0; color: #c8f8ff; font-size: 13px; font-weight: 800; }
+
+.hud {
+  position: absolute;
+  z-index: 25;
+  left: max(10px, env(safe-area-inset-left));
+  right: max(10px, env(safe-area-inset-right));
+  top: max(9px, env(safe-area-inset-top));
+  display: grid;
+  grid-template-columns: minmax(105px, 1fr) minmax(330px, 3.8fr) minmax(105px, 1fr);
+  gap: 11px;
+  align-items: start;
+  pointer-events: none;
+}
+
+.hud-box,
+.question-card {
+  border: 4px solid white;
+  border-radius: 19px;
+  background: #16114fdc;
+  box-shadow: 0 6px 0 #09082d;
+  text-align: center;
+}
+
+.hud-box { padding: 7px 9px; }
+.hud-box > span { font-size: 20px; }
+.hud-box small { display: block; margin-top: -2px; color: #c9f8ff; font-size: 11px; font-weight: 900; text-transform: uppercase; }
+.hud-box strong { display: block; color: var(--yellow); font-size: clamp(22px, 3vw, 35px); line-height: 1; }
+
+.question-card { position: relative; padding: 8px 14px 13px; overflow: hidden; }
+.question-card small { display: block; color: var(--yellow); font-size: 12px; font-weight: 1000; letter-spacing: .14em; }
+.question-card strong { display: block; margin-top: 1px; font-size: clamp(22px, 3.25vw, 43px); line-height: 1.05; text-wrap: balance; }
+.approach-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 7px; background: #09082f; }
+.approach-bar i { display: block; width: 0; height: 100%; background: linear-gradient(90deg, var(--cyan), var(--yellow), var(--orange)); transition: width .12s linear; }
+
+.touch-controls {
+  position: absolute;
+  z-index: 28;
+  left: max(14px, env(safe-area-inset-left));
+  right: max(14px, env(safe-area-inset-right));
+  bottom: var(--safe-bottom);
+  display: grid;
+  grid-template-columns: 86px 1fr 86px;
+  align-items: end;
+  gap: 14px;
+  pointer-events: none;
+}
+
+.touch-controls button {
+  width: 86px;
+  height: 68px;
+  border: 4px solid white;
+  border-radius: 20px;
+  color: white;
+  background: #3824a8d9;
+  box-shadow: 0 7px 0 #17105c;
+  font-size: 33px;
+  font-weight: 1000;
+  pointer-events: auto;
+  touch-action: manipulation;
+}
+
+.touch-controls button:active { transform: translateY(5px); box-shadow: 0 2px 0 #17105c; }
+.touch-controls div { align-self: end; padding: 5px 12px; border-radius: 13px; background: #111044b8; text-align: center; text-shadow: 0 2px #0a082b; }
+.touch-controls small { display: block; color: var(--yellow); font-size: 10px; font-weight: 1000; letter-spacing: .12em; }
+.touch-controls span { font-size: 12px; font-weight: 900; }
+
+.pause-button {
+  position: absolute;
+  z-index: 30;
+  right: max(12px, env(safe-area-inset-right));
+  top: 116px;
+  width: 45px;
+  height: 45px;
+  border: 3px solid white;
+  border-radius: 14px;
+  color: white;
+  background: #16114fd9;
+  box-shadow: 0 4px 0 #09082d;
+  font-size: 20px;
+  font-weight: 1000;
+  cursor: pointer;
+}
+
+.pause-panel {
+  position: absolute;
+  z-index: 60;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: #0c093bb8;
+  backdrop-filter: blur(6px);
+}
+
+.pause-panel > div { width: min(480px, 90vw); padding: 28px; border: 5px solid white; border-radius: 28px; background: linear-gradient(#5d3de4, #281789); text-align: center; box-shadow: 0 11px 0 #151060; }
+.pause-panel h2 { margin: 0; font-size: 50px; }
+.pause-panel p { margin: 7px 0 18px; color: #c6f8ff; font-weight: 900; }
+
+.feedback {
+  position: absolute;
+  z-index: 45;
+  left: 50%;
+  top: 48%;
+  width: min(620px, 88vw);
+  padding: 18px 24px;
+  transform: translate(-50%, -50%);
+  border: 6px solid white;
+  border-radius: 28px;
+  background: linear-gradient(#27d98b, #09965b);
+  box-shadow: 0 12px 0 #07623e, 0 18px 35px #061c3499;
+  text-align: center;
+  pointer-events: none;
+  animation: feedbackIn .28s ease both;
+}
+
+.feedback.incorrect { background: linear-gradient(#ff6979, #d9244c); box-shadow: 0 12px 0 #8f1934, 0 18px 35px #061c3499; }
+.feedback-burst { position: absolute; inset: -95px -80px; display: grid; place-items: center; font-size: 78px; opacity: .22; animation: starSpin 1s ease-out; }
+.feedback h2 { position: relative; margin: 0; color: white; font-size: clamp(38px, 7vw, 78px); line-height: 1; text-shadow: 0 5px 0 #087247; }
+.feedback.incorrect h2 { text-shadow: 0 5px 0 #90182f; }
+.feedback p { position: relative; margin: 10px 0 0; color: #fff8aa; font-size: clamp(18px, 2.8vw, 30px); font-weight: 1000; }
+@keyframes feedbackIn { from { opacity: 0; transform: translate(-50%, -50%) scale(.55); } }
+@keyframes starSpin { to { transform: rotate(420deg) scale(1.8); opacity: 0; } }
+
+.result-card { width: min(650px, 94vw); }
+.result-icon { font-size: 62px; }
+.result-card h2 { color: var(--yellow); font-size: clamp(44px, 8vw, 76px); }
+.final-score { display: flex; justify-content: center; align-items: baseline; gap: 8px; margin: 19px 0; }
+.final-score span { font-size: 30px; }
+.final-score strong { color: var(--yellow); font-size: 62px; }
+.final-score small { color: #c8f8ff; font-weight: 900; }
+.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin: 14px 0 24px; }
+.stats-grid div { padding: 12px 7px; border: 2px solid #ffffff79; border-radius: 15px; background: #16105d; }
+.stats-grid strong { display: block; color: var(--yellow); font-size: clamp(24px, 4vw, 38px); }
+.stats-grid span { font-size: 12px; font-weight: 900; }
+.text-button { display: block; margin: 17px auto 0; padding: 8px 15px; border: 0; color: #c9f8ff; background: transparent; font-weight: 900; text-decoration: underline; cursor: pointer; }
+
+@media (max-width: 700px) {
+  .hud { grid-template-columns: 78px 1fr 78px; gap: 6px; left: 5px; right: 5px; top: 5px; }
+  .hud-box { padding: 5px; border-width: 3px; }
+  .hud-box > span { display: none; }
+  .hud-box strong { font-size: 24px; }
+  .question-card { padding: 6px 8px 12px; border-width: 3px; }
+  .question-card strong { font-size: clamp(18px, 5.2vw, 31px); }
+  .pause-button { top: 96px; width: 40px; height: 40px; }
+  .touch-controls { grid-template-columns: 70px 1fr 70px; gap: 8px; }
+  .touch-controls button { width: 70px; height: 60px; }
+  .difficulty { grid-template-columns: 1fr; max-width: 420px; }
+  .level { min-height: 58px; display: grid; grid-template-columns: 40px 1fr; align-items: center; text-align: left; }
+  .level span { grid-row: 1 / 3; text-align: center; }
+  .logo-orbit { display: none; }
+}
+
+@media (orientation: portrait) {
+  .start-card { margin: auto 0; }
+  .visual-instructions > div { min-width: 118px; flex: 1; }
+  .touch-controls div { opacity: .78; }
+}
+
+@media (max-height: 690px) and (orientation: landscape) {
+  .start-card { padding: 14px 24px; transform: scale(.92); }
+  .start-card h1 { font-size: 55px; }
+  .tagline { margin: 10px 0; }
+  .difficulty { margin: 8px auto; }
+  .level { min-height: 68px; }
+  .visual-instructions { margin: 9px auto; }
+  .visual-instructions > div { padding: 5px 8px; }
+  .safety-note { margin-top: 8px; }
+  .touch-controls button { height: 58px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-orbit i,
+  .feedback-burst { animation: none; }
+}
+
+  </style>
 </head>
 <body>
   <main id="app" class="app">
@@ -78,7 +440,979 @@
     </nav>
   </main>
 
-  <script src="questions.js"></script>
-  <script src="game.js"></script>
+  <script>
+/*
+ * VERB TO BE HUNT — Teacher-editable question bank
+ *
+ * Add or replace questions here without changing game.js.
+ * Required fields:
+ *   id          unique short name
+ *   subject     grammatical subject
+ *   sentence    displayed sentence containing exactly one ___ blank
+ *   answer      am, is, or are
+ *   category    pronoun, singular, or plural
+ *   difficulty  easy, medium, or hard
+ */
+window.VERB_TO_BE_QUESTIONS = [
+  // Subject pronouns — EASY
+  { id: 'p01', subject: 'I', sentence: 'I ___ ready.', answer: 'am', category: 'pronoun', difficulty: 'easy' },
+  { id: 'p02', subject: 'I', sentence: 'I ___ eleven years old.', answer: 'am', category: 'pronoun', difficulty: 'easy' },
+  { id: 'p03', subject: 'You', sentence: 'You ___ kind.', answer: 'are', category: 'pronoun', difficulty: 'easy' },
+  { id: 'p04', subject: 'You', sentence: 'You ___ my friend.', answer: 'are', category: 'pronoun', difficulty: 'easy' },
+  { id: 'p05', subject: 'We', sentence: 'We ___ happy.', answer: 'are', category: 'pronoun', difficulty: 'easy' },
+  { id: 'p06', subject: 'We', sentence: 'We ___ in Grade 5.', answer: 'are', category: 'pronoun', difficulty: 'easy' },
+  { id: 'p07', subject: 'They', sentence: 'They ___ in the room.', answer: 'are', category: 'pronoun', difficulty: 'easy' },
+  { id: 'p08', subject: 'They', sentence: 'They ___ at school.', answer: 'are', category: 'pronoun', difficulty: 'easy' },
+  { id: 'p09', subject: 'He', sentence: 'He ___ my brother.', answer: 'is', category: 'pronoun', difficulty: 'easy' },
+  { id: 'p10', subject: 'He', sentence: 'He ___ ten years old.', answer: 'is', category: 'pronoun', difficulty: 'easy' },
+  { id: 'p11', subject: 'She', sentence: 'She ___ a student.', answer: 'is', category: 'pronoun', difficulty: 'easy' },
+  { id: 'p12', subject: 'She', sentence: 'She ___ very clever.', answer: 'is', category: 'pronoun', difficulty: 'easy' },
+  { id: 'p13', subject: 'It', sentence: 'It ___ cute.', answer: 'is', category: 'pronoun', difficulty: 'easy' },
+  { id: 'p14', subject: 'It', sentence: 'It ___ on the desk.', answer: 'is', category: 'pronoun', difficulty: 'easy' },
+
+  // Singular noun subjects — MEDIUM
+  { id: 's01', subject: 'The boy', sentence: 'The boy ___ happy.', answer: 'is', category: 'singular', difficulty: 'medium' },
+  { id: 's02', subject: 'The girl', sentence: 'The girl ___ ready.', answer: 'is', category: 'singular', difficulty: 'medium' },
+  { id: 's03', subject: 'My friend', sentence: 'My friend ___ kind.', answer: 'is', category: 'singular', difficulty: 'medium' },
+  { id: 's04', subject: 'The teacher', sentence: 'The teacher ___ in the classroom.', answer: 'is', category: 'singular', difficulty: 'medium' },
+  { id: 's05', subject: 'A cat', sentence: 'A cat ___ under the chair.', answer: 'is', category: 'singular', difficulty: 'medium' },
+  { id: 's06', subject: 'The dog', sentence: 'The dog ___ cute.', answer: 'is', category: 'singular', difficulty: 'medium' },
+  { id: 's07', subject: 'An elephant', sentence: 'An elephant ___ very big.', answer: 'is', category: 'singular', difficulty: 'medium' },
+  { id: 's08', subject: 'The student', sentence: 'The student ___ ready.', answer: 'is', category: 'singular', difficulty: 'medium' },
+  { id: 's09', subject: 'Tom', sentence: 'Tom ___ my friend.', answer: 'is', category: 'singular', difficulty: 'medium' },
+  { id: 's10', subject: 'Lisa', sentence: 'Lisa ___ a student.', answer: 'is', category: 'singular', difficulty: 'medium' },
+  { id: 's11', subject: 'My teacher', sentence: 'My teacher ___ kind.', answer: 'is', category: 'singular', difficulty: 'medium' },
+  { id: 's12', subject: 'The book', sentence: 'The book ___ on the table.', answer: 'is', category: 'singular', difficulty: 'medium' },
+
+  // Plural noun subjects — HARD
+  { id: 'm01', subject: 'The boys', sentence: 'The boys ___ happy.', answer: 'are', category: 'plural', difficulty: 'hard' },
+  { id: 'm02', subject: 'The girls', sentence: 'The girls ___ ready.', answer: 'are', category: 'plural', difficulty: 'hard' },
+  { id: 'm03', subject: 'My friends', sentence: 'My friends ___ in the classroom.', answer: 'are', category: 'plural', difficulty: 'hard' },
+  { id: 'm04', subject: 'The teachers', sentence: 'The teachers ___ kind.', answer: 'are', category: 'plural', difficulty: 'hard' },
+  { id: 'm05', subject: 'Two cats', sentence: 'Two cats ___ under the chair.', answer: 'are', category: 'plural', difficulty: 'hard' },
+  { id: 'm06', subject: 'The dogs', sentence: 'The dogs ___ hungry.', answer: 'are', category: 'plural', difficulty: 'hard' },
+  { id: 'm07', subject: 'The elephants', sentence: 'The elephants ___ very big.', answer: 'are', category: 'plural', difficulty: 'hard' },
+  { id: 'm08', subject: 'The students', sentence: 'The students ___ ready.', answer: 'are', category: 'plural', difficulty: 'hard' },
+  { id: 'm09', subject: 'Tom and Lisa', sentence: 'Tom and Lisa ___ friends.', answer: 'are', category: 'plural', difficulty: 'hard' },
+  { id: 'm10', subject: 'The children', sentence: 'The children ___ in the park.', answer: 'are', category: 'plural', difficulty: 'hard' },
+  { id: 'm11', subject: 'Three books', sentence: 'Three books ___ on the desk.', answer: 'are', category: 'plural', difficulty: 'hard' },
+  { id: 'm12', subject: 'Adam and I', sentence: 'Adam and I ___ classmates.', answer: 'are', category: 'plural', difficulty: 'hard' }
+];
+
+  </script>
+  <script>
+(() => {
+  'use strict';
+
+  // ---------------------------------------------------------------------------
+  // DOM and constants
+  // ---------------------------------------------------------------------------
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d', { alpha: false });
+  const app = document.getElementById('app');
+  const hud = document.getElementById('hud');
+  const scoreValue = document.getElementById('scoreValue');
+  const livesValue = document.getElementById('livesValue');
+  const questionText = document.getElementById('questionText');
+  const phaseLabel = document.getElementById('phaseLabel');
+  const approachBar = document.querySelector('#approachBar i');
+  const laneAnnouncer = document.getElementById('laneAnnouncer');
+  const gateAnnouncer = document.getElementById('gateAnnouncer');
+  const startScreen = document.getElementById('startScreen');
+  const startButton = document.getElementById('startButton');
+  const feedback = document.getElementById('feedback');
+  const feedbackTitle = document.getElementById('feedbackTitle');
+  const completeSentence = document.getElementById('completeSentence');
+  const feedbackBurst = document.getElementById('feedbackBurst');
+  const gameOverScreen = document.getElementById('gameOverScreen');
+  const finalScore = document.getElementById('finalScore');
+  const correctCount = document.getElementById('correctCount');
+  const incorrectCount = document.getElementById('incorrectCount');
+  const accuracyValue = document.getElementById('accuracyValue');
+  const restartButton = document.getElementById('restartButton');
+  const changeLevelButton = document.getElementById('changeLevelButton');
+  const touchControls = document.getElementById('touchControls');
+  const leftButton = document.getElementById('leftButton');
+  const rightButton = document.getElementById('rightButton');
+  const pauseButton = document.getElementById('pauseButton');
+  const pauseScreen = document.getElementById('pauseScreen');
+  const resumeButton = document.getElementById('resumeButton');
+
+  const ANSWERS = ['am', 'is', 'are'];
+  const LANE_COUNT = 3;
+  const START_LIVES = 3;
+  const POINTS_PER_CORRECT = 10;
+  const READ_SECONDS = 3.2;
+  const APPROACH_SECONDS = 7.4;
+  const FEEDBACK_SECONDS = 1.45;
+  const INPUT_COOLDOWN_MS = 145;
+  const SWIPE_THRESHOLD = 34;
+  const GATE_WAIT_PROGRESS = 0.93;
+
+  const LEVEL_CATEGORIES = {
+    easy: ['pronoun'],
+    medium: ['pronoun', 'singular'],
+    hard: ['pronoun', 'singular', 'plural']
+  };
+
+  const COLORS = {
+    lane: ['#20c9e7', '#7250e9', '#2fd78a'],
+    laneDark: ['#1170bb', '#3b239c', '#137b4e'],
+    skyTop: '#35c9f1',
+    skyBottom: '#b9f6ff',
+    road: '#34385f',
+    roadEdge: '#151838',
+    yellow: '#ffe052'
+  };
+
+  if (!Array.isArray(window.VERB_TO_BE_QUESTIONS) || !window.VERB_TO_BE_QUESTIONS.length) {
+    throw new Error('Question bank not found. Load questions.js before game.js.');
+  }
+
+  // ---------------------------------------------------------------------------
+  // Game state
+  // ---------------------------------------------------------------------------
+  const game = {
+    mode: 'start',
+    previousMode: 'start',
+    level: 'easy',
+    score: 0,
+    lives: START_LIVES,
+    correct: 0,
+    incorrect: 0,
+    currentQuestion: null,
+    questionDeck: [],
+    lastQuestionId: null,
+    gateOrder: [...ANSWERS],
+    correctLane: 1,
+    playerLane: 1,
+    targetLane: 1,
+    playerX: 0,
+    readRemaining: READ_SECONDS,
+    gateProgress: 0,
+    hasMovedThisQuestion: false,
+    waitingForMove: false,
+    feedbackRemaining: 0,
+    worldOffset: 0,
+    elapsed: 0,
+    lastInputAt: 0,
+    shake: 0,
+    particles: [],
+    lastFrameAt: performance.now()
+  };
+
+  let viewWidth = 0;
+  let viewHeight = 0;
+  let pixelRatio = 1;
+  let pointerStart = null;
+  let audioContext = null;
+
+  // Stable decorative scene data keeps rendering inexpensive.
+  const buildings = Array.from({ length: 18 }, (_, index) => ({
+    x: index / 17,
+    width: 42 + (index * 29) % 58,
+    height: 58 + (index * 47) % 110,
+    color: ['#ff786f', '#6d64e7', '#27c795', '#ffad3f'][index % 4]
+  }));
+
+  // ---------------------------------------------------------------------------
+  // General utilities
+  // ---------------------------------------------------------------------------
+  const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+  const lerp = (a, b, amount) => a + (b - a) * amount;
+
+  function shuffled(array) {
+    const result = [...array];
+    for (let index = result.length - 1; index > 0; index -= 1) {
+      const swapIndex = Math.floor(Math.random() * (index + 1));
+      [result[index], result[swapIndex]] = [result[swapIndex], result[index]];
+    }
+    return result;
+  }
+
+  function roundedRect(context, x, y, width, height, radius) {
+    const r = Math.min(radius, width / 2, height / 2);
+    context.beginPath();
+    context.moveTo(x + r, y);
+    context.lineTo(x + width - r, y);
+    context.quadraticCurveTo(x + width, y, x + width, y + r);
+    context.lineTo(x + width, y + height - r);
+    context.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
+    context.lineTo(x + r, y + height);
+    context.quadraticCurveTo(x, y + height, x, y + height - r);
+    context.lineTo(x, y + r);
+    context.quadraticCurveTo(x, y, x + r, y);
+    context.closePath();
+  }
+
+  function completeQuestionSentence(question) {
+    return question.sentence.replace('___', question.answer);
+  }
+
+  function resizeCanvas() {
+    const rect = app.getBoundingClientRect();
+    viewWidth = Math.max(320, rect.width);
+    viewHeight = Math.max(480, rect.height);
+    pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(viewWidth * pixelRatio);
+    canvas.height = Math.round(viewHeight * pixelRatio);
+    canvas.style.width = `${viewWidth}px`;
+    canvas.style.height = `${viewHeight}px`;
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    game.playerX = laneCenterX(game.playerLane, 0.9);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Question manager — data remains in questions.js
+  // ---------------------------------------------------------------------------
+  function questionsForLevel(level) {
+    const categories = LEVEL_CATEGORIES[level];
+    return window.VERB_TO_BE_QUESTIONS.filter((question) => categories.includes(question.category));
+  }
+
+  function refillQuestionDeck() {
+    const available = questionsForLevel(game.level);
+    game.questionDeck = shuffled(available);
+    if (game.questionDeck.length > 1 && game.questionDeck[0].id === game.lastQuestionId) {
+      [game.questionDeck[0], game.questionDeck[1]] = [game.questionDeck[1], game.questionDeck[0]];
+    }
+  }
+
+  function nextQuestion() {
+    if (!game.questionDeck.length) refillQuestionDeck();
+    let question = game.questionDeck.shift();
+    if (question.id === game.lastQuestionId && game.questionDeck.length) {
+      game.questionDeck.push(question);
+      question = game.questionDeck.shift();
+    }
+    game.lastQuestionId = question.id;
+    return question;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Game flow and score system
+  // ---------------------------------------------------------------------------
+  function startGame() {
+    unlockAudio();
+    game.score = 0;
+    game.lives = START_LIVES;
+    game.correct = 0;
+    game.incorrect = 0;
+    game.lastQuestionId = null;
+    game.questionDeck = [];
+    game.particles = [];
+    game.shake = 0;
+    game.worldOffset = 0;
+    startScreen.classList.add('hidden');
+    gameOverScreen.classList.add('hidden');
+    feedback.classList.add('hidden');
+    pauseScreen.classList.add('hidden');
+    hud.classList.remove('hidden');
+    touchControls.classList.remove('hidden');
+    pauseButton.classList.remove('hidden');
+    updateHud();
+    prepareQuestion();
+  }
+
+  function prepareQuestion() {
+    game.currentQuestion = nextQuestion();
+    game.gateOrder = shuffled(ANSWERS);
+    game.correctLane = game.gateOrder.indexOf(game.currentQuestion.answer);
+    game.playerLane = 1;
+    game.targetLane = 1;
+    game.playerX = laneCenterX(1, 0.9);
+    game.readRemaining = READ_SECONDS;
+    game.gateProgress = 0;
+    game.hasMovedThisQuestion = false;
+    game.waitingForMove = false;
+    game.mode = 'reading';
+    questionText.textContent = game.currentQuestion.sentence;
+    laneAnnouncer.textContent = 'Center lane';
+    gateAnnouncer.textContent = `Left ${game.gateOrder[0].toUpperCase()}, Center ${game.gateOrder[1].toUpperCase()}, Right ${game.gateOrder[2].toUpperCase()}`;
+    phaseLabel.textContent = `READ ${Math.ceil(READ_SECONDS)}`;
+    approachBar.style.width = '0%';
+    updateHud();
+  }
+
+  function evaluateAnswer() {
+    if (game.mode !== 'running') return;
+    const selectedAnswer = game.gateOrder[game.playerLane];
+    const isCorrect = selectedAnswer === game.currentQuestion.answer;
+    game.mode = 'feedback';
+    game.feedbackRemaining = FEEDBACK_SECONDS;
+    game.gateProgress = 1;
+
+    if (isCorrect) {
+      game.score += POINTS_PER_CORRECT;
+      game.correct += 1;
+      createStarBurst(laneCenterX(game.playerLane, 0.83), roadY(0.83), 22);
+      showFeedback(true);
+      playSuccessSound();
+    } else {
+      game.lives -= 1;
+      game.incorrect += 1;
+      game.shake = 0.55;
+      showFeedback(false);
+      playIncorrectSound();
+    }
+    updateHud();
+  }
+
+  function showFeedback(isCorrect) {
+    feedback.classList.toggle('incorrect', !isCorrect);
+    feedbackTitle.textContent = isCorrect ? 'CORRECT!' : 'TRY AGAIN!';
+    feedbackBurst.textContent = isCorrect ? '⭐' : '💥';
+    completeSentence.textContent = completeQuestionSentence(game.currentQuestion);
+    feedback.classList.remove('hidden');
+  }
+
+  function finishFeedback() {
+    feedback.classList.add('hidden');
+    if (game.lives <= 0) {
+      showGameOver();
+    } else {
+      prepareQuestion();
+    }
+  }
+
+  function showGameOver() {
+    game.mode = 'gameover';
+    hud.classList.add('hidden');
+    touchControls.classList.add('hidden');
+    pauseButton.classList.add('hidden');
+    const attempts = game.correct + game.incorrect;
+    const accuracy = attempts ? Math.round((game.correct / attempts) * 100) : 0;
+    finalScore.textContent = String(game.score);
+    correctCount.textContent = String(game.correct);
+    incorrectCount.textContent = String(game.incorrect);
+    accuracyValue.textContent = `${accuracy}%`;
+    gameOverScreen.classList.remove('hidden');
+  }
+
+  function returnToStart() {
+    game.mode = 'start';
+    gameOverScreen.classList.add('hidden');
+    hud.classList.add('hidden');
+    touchControls.classList.add('hidden');
+    pauseButton.classList.add('hidden');
+    startScreen.classList.remove('hidden');
+  }
+
+  function updateHud() {
+    scoreValue.textContent = String(game.score);
+    livesValue.textContent = String(game.lives);
+  }
+
+  function pauseGame() {
+    if (!['reading', 'running'].includes(game.mode)) return;
+    game.previousMode = game.mode;
+    game.mode = 'paused';
+    pauseScreen.classList.remove('hidden');
+  }
+
+  function resumeGame() {
+    if (game.mode !== 'paused') return;
+    game.mode = game.previousMode;
+    game.lastFrameAt = performance.now();
+    pauseScreen.classList.add('hidden');
+  }
+
+  // ---------------------------------------------------------------------------
+  // Input controls
+  // ---------------------------------------------------------------------------
+  function moveLane(direction) {
+    if (!['reading', 'running'].includes(game.mode)) return false;
+    const now = performance.now();
+    if (now - game.lastInputAt < INPUT_COOLDOWN_MS) return false;
+    const nextLane = clamp(game.targetLane + direction, 0, LANE_COUNT - 1);
+    if (nextLane === game.targetLane) return false;
+    game.lastInputAt = now;
+    game.targetLane = nextLane;
+    game.playerLane = nextLane;
+    laneAnnouncer.textContent = `${['Left', 'Center', 'Right'][nextLane]} lane`;
+    game.hasMovedThisQuestion = true;
+    if (game.waitingForMove) {
+      // Give the learner enough time to move away and return to center if needed.
+      game.waitingForMove = false;
+      game.gateProgress = 0.78;
+      phaseLabel.textContent = 'CHOOSE!';
+    }
+    playMoveSound();
+    return true;
+  }
+
+  function onKeyDown(event) {
+    if (event.repeat) return;
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      moveLane(-1);
+    } else if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      moveLane(1);
+    } else if ((event.key === ' ' || event.key === 'Escape') && ['reading', 'running', 'paused'].includes(game.mode)) {
+      event.preventDefault();
+      if (game.mode === 'paused') resumeGame(); else pauseGame();
+    }
+  }
+
+  function onPointerDown(event) {
+    if (!['reading', 'running'].includes(game.mode)) return;
+    pointerStart = { x: event.clientX, y: event.clientY, id: event.pointerId };
+  }
+
+  function onPointerUp(event) {
+    if (!pointerStart || pointerStart.id !== event.pointerId) return;
+    const deltaX = event.clientX - pointerStart.x;
+    const deltaY = event.clientY - pointerStart.y;
+    pointerStart = null;
+    if (Math.abs(deltaX) >= SWIPE_THRESHOLD && Math.abs(deltaX) > Math.abs(deltaY) * 1.15) {
+      moveLane(deltaX > 0 ? 1 : -1);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Update loop
+  // ---------------------------------------------------------------------------
+  function update(deltaSeconds) {
+    game.elapsed += deltaSeconds;
+    const worldSpeed = game.mode === 'running' ? 0.105 : 0.045;
+    if (game.mode !== 'paused') game.worldOffset = (game.worldOffset + deltaSeconds * worldSpeed) % 1;
+
+    const targetX = laneCenterX(game.targetLane, 0.9);
+    game.playerX = lerp(game.playerX || targetX, targetX, clamp(deltaSeconds * 10, 0, 1));
+
+    if (game.mode === 'reading') {
+      game.readRemaining -= deltaSeconds;
+      phaseLabel.textContent = `READ ${Math.max(1, Math.ceil(game.readRemaining))}`;
+      if (game.readRemaining <= 0) {
+        game.mode = 'running';
+        phaseLabel.textContent = 'CHOOSE!';
+        playReadySound();
+      }
+    } else if (game.mode === 'running') {
+      if (game.waitingForMove) {
+        game.gateProgress = GATE_WAIT_PROGRESS;
+        phaseLabel.textContent = 'MOVE TO CHOOSE!';
+      } else {
+        game.gateProgress += deltaSeconds / APPROACH_SECONDS;
+        if (game.gateProgress >= GATE_WAIT_PROGRESS && !game.hasMovedThisQuestion) {
+          game.gateProgress = GATE_WAIT_PROGRESS;
+          game.waitingForMove = true;
+          phaseLabel.textContent = 'MOVE TO CHOOSE!';
+        } else if (game.gateProgress >= 1) {
+          evaluateAnswer();
+        }
+      }
+      approachBar.style.width = `${clamp(game.gateProgress, 0, 1) * 100}%`;
+    } else if (game.mode === 'feedback') {
+      game.feedbackRemaining -= deltaSeconds;
+      if (game.feedbackRemaining <= 0) finishFeedback();
+    }
+
+    if (game.shake > 0) game.shake = Math.max(0, game.shake - deltaSeconds);
+    updateParticles(deltaSeconds);
+  }
+
+  function frame(now) {
+    const deltaSeconds = clamp((now - game.lastFrameAt) / 1000, 0, 0.05);
+    game.lastFrameAt = now;
+    update(deltaSeconds);
+    render();
+    requestAnimationFrame(frame);
+  }
+
+  // ---------------------------------------------------------------------------
+  // 2.5D Canvas renderer
+  // ---------------------------------------------------------------------------
+  function horizonY() {
+    return viewHeight * (viewHeight > viewWidth ? 0.31 : 0.29);
+  }
+
+  function roadY(z) {
+    return horizonY() + Math.pow(clamp(z, 0, 1), 1.55) * (viewHeight * 0.78);
+  }
+
+  function roadHalfWidth(z) {
+    const portrait = viewHeight > viewWidth;
+    const top = viewWidth * (portrait ? 0.075 : 0.065);
+    const bottom = viewWidth * (portrait ? 0.54 : 0.47);
+    return lerp(top, bottom, Math.pow(clamp(z, 0, 1), 1.18));
+  }
+
+  function laneCenterX(lane, z) {
+    const half = roadHalfWidth(z);
+    const left = viewWidth / 2 - half;
+    return left + ((lane + 0.5) / LANE_COUNT) * half * 2;
+  }
+
+  function roadBoundaryX(fraction, z) {
+    const half = roadHalfWidth(z);
+    return viewWidth / 2 - half + fraction * half * 2;
+  }
+
+  function render() {
+    ctx.save();
+    if (game.shake > 0) {
+      const amount = game.shake * 12;
+      ctx.translate((Math.random() - 0.5) * amount, (Math.random() - 0.5) * amount);
+    }
+    drawSkyAndTown();
+    drawRoad();
+    drawRoadsideObjects();
+    drawCollectibleStars();
+    if (game.currentQuestion && game.mode !== 'start' && game.mode !== 'gameover') drawAnswerGates();
+    if (game.mode !== 'start' && game.mode !== 'gameover') drawPlayer();
+    drawParticles();
+    ctx.restore();
+  }
+
+  function drawSkyAndTown() {
+    const sky = ctx.createLinearGradient(0, 0, 0, horizonY() + 80);
+    sky.addColorStop(0, COLORS.skyTop);
+    sky.addColorStop(1, COLORS.skyBottom);
+    ctx.fillStyle = sky;
+    ctx.fillRect(0, 0, viewWidth, viewHeight);
+
+    // Sun
+    ctx.fillStyle = '#fff36c';
+    ctx.beginPath();
+    ctx.arc(viewWidth * 0.84, viewHeight * 0.15, Math.min(viewWidth, viewHeight) * 0.055, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Slow clouds
+    for (let index = 0; index < 4; index += 1) {
+      const x = ((index * 0.29 + game.elapsed * 0.006) % 1.25 - 0.1) * viewWidth;
+      const y = viewHeight * (0.08 + (index % 2) * 0.07);
+      const scale = 0.7 + (index % 3) * 0.18;
+      drawCloud(x, y, scale);
+    }
+
+    const baseY = horizonY() + 18;
+    buildings.forEach((building, index) => {
+      const x = building.x * viewWidth - building.width / 2;
+      const width = building.width * (viewWidth / 1100 + 0.35);
+      const height = building.height * (viewHeight / 800 + 0.3);
+      ctx.fillStyle = '#26285e';
+      roundedRect(ctx, x - 4, baseY - height - 4, width + 8, height + 7, 7);
+      ctx.fill();
+      ctx.fillStyle = building.color;
+      roundedRect(ctx, x, baseY - height, width, height, 5);
+      ctx.fill();
+      ctx.fillStyle = '#fff2a0';
+      const columns = Math.max(1, Math.floor(width / 24));
+      for (let col = 0; col < columns; col += 1) {
+        for (let row = 0; row < 3; row += 1) {
+          ctx.fillRect(x + 8 + col * 22, baseY - height + 14 + row * 24, 10, 12);
+        }
+      }
+      if (index === 8) {
+        ctx.fillStyle = '#171344';
+        roundedRect(ctx, x + width * 0.12, baseY - height + 9, width * 0.76, 22, 7);
+        ctx.fill();
+        ctx.fillStyle = COLORS.yellow;
+        ctx.font = '900 11px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('SCHOOL', x + width / 2, baseY - height + 24);
+      }
+    });
+  }
+
+  function drawCloud(x, y, scale) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(scale, scale);
+    ctx.fillStyle = '#ffffffdf';
+    ctx.beginPath();
+    ctx.arc(0, 12, 24, 0, Math.PI * 2);
+    ctx.arc(28, 2, 31, 0, Math.PI * 2);
+    ctx.arc(61, 13, 23, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function drawRoad() {
+    const horizon = horizonY();
+    const bottomY = viewHeight * 1.07;
+    const topHalf = roadHalfWidth(0);
+    const bottomHalf = roadHalfWidth(1);
+
+    // Grass and pavement shoulders
+    ctx.fillStyle = '#45ce76';
+    ctx.fillRect(0, horizon, viewWidth, viewHeight - horizon);
+    ctx.fillStyle = '#ded8c9';
+    ctx.beginPath();
+    ctx.moveTo(viewWidth / 2 - topHalf - 10, horizon);
+    ctx.lineTo(viewWidth / 2 - bottomHalf - viewWidth * 0.06, bottomY);
+    ctx.lineTo(viewWidth / 2 + bottomHalf + viewWidth * 0.06, bottomY);
+    ctx.lineTo(viewWidth / 2 + topHalf + 10, horizon);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = COLORS.roadEdge;
+    ctx.beginPath();
+    ctx.moveTo(viewWidth / 2 - topHalf - 5, horizon);
+    ctx.lineTo(viewWidth / 2 - bottomHalf - 10, bottomY);
+    ctx.lineTo(viewWidth / 2 + bottomHalf + 10, bottomY);
+    ctx.lineTo(viewWidth / 2 + topHalf + 5, horizon);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = COLORS.road;
+    ctx.beginPath();
+    ctx.moveTo(viewWidth / 2 - topHalf, horizon);
+    ctx.lineTo(viewWidth / 2 - bottomHalf, bottomY);
+    ctx.lineTo(viewWidth / 2 + bottomHalf, bottomY);
+    ctx.lineTo(viewWidth / 2 + topHalf, horizon);
+    ctx.closePath();
+    ctx.fill();
+
+    // Lane divider dashes move slowly toward the player.
+    for (let boundary = 1; boundary <= 2; boundary += 1) {
+      for (let index = 0; index < 18; index += 1) {
+        const z1 = (index / 18 + game.worldOffset) % 1;
+        const z2 = clamp(z1 + 0.028 + z1 * 0.025, 0, 1);
+        const y1 = roadY(z1);
+        const y2 = roadY(z2);
+        const width1 = lerp(1, 7, z1);
+        const width2 = lerp(1, 8, z2);
+        ctx.fillStyle = '#f2fbffde';
+        ctx.beginPath();
+        ctx.moveTo(roadBoundaryX(boundary / 3, z1) - width1 / 2, y1);
+        ctx.lineTo(roadBoundaryX(boundary / 3, z2) - width2 / 2, y2);
+        ctx.lineTo(roadBoundaryX(boundary / 3, z2) + width2 / 2, y2);
+        ctx.lineTo(roadBoundaryX(boundary / 3, z1) + width1 / 2, y1);
+        ctx.closePath();
+        ctx.fill();
+      }
+    }
+
+    // Cross ties give a gentle forward-motion cue.
+    for (let index = 0; index < 15; index += 1) {
+      const z = (index / 15 + game.worldOffset * 0.78) % 1;
+      if (z < 0.06) continue;
+      const y = roadY(z);
+      ctx.strokeStyle = `rgba(196,135,81,${0.18 + z * 0.34})`;
+      ctx.lineWidth = 1 + z * 7;
+      ctx.beginPath();
+      ctx.moveTo(roadBoundaryX(0.04, z), y);
+      ctx.lineTo(roadBoundaryX(0.96, z), y);
+      ctx.stroke();
+    }
+  }
+
+  function drawRoadsideObjects() {
+    for (let side = -1; side <= 1; side += 2) {
+      for (let index = 0; index < 7; index += 1) {
+        const z = (index / 7 + game.worldOffset * 0.62 + (side > 0 ? 0.07 : 0)) % 1;
+        if (z < 0.08 || z > 0.92) continue;
+        const scale = 0.22 + z * 0.92;
+        const x = viewWidth / 2 + side * (roadHalfWidth(z) + 24 + z * 34);
+        const y = roadY(z);
+        drawTree(x, y, scale);
+      }
+    }
+  }
+
+  function drawTree(x, y, scale) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(scale, scale);
+    ctx.fillStyle = '#8f552f';
+    ctx.fillRect(-5, -35, 10, 37);
+    ctx.fillStyle = '#137b4d';
+    ctx.beginPath();
+    ctx.arc(0, -48, 25, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#35d47f';
+    ctx.beginPath();
+    ctx.arc(-11, -55, 17, 0, Math.PI * 2);
+    ctx.arc(12, -53, 16, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function drawCollectibleStars() {
+    for (let index = 0; index < 6; index += 1) {
+      const z = (index / 6 + game.worldOffset * 0.48 + 0.11) % 1;
+      if (z < 0.15 || z > 0.75) continue;
+      const lane = (index + 1) % 3;
+      const x = laneCenterX(lane, z);
+      const y = roadY(z) - 12 - z * 20;
+      drawStar(x, y, 3 + z * 9, '#ffe45a', '#ff9c27');
+    }
+  }
+
+  function drawAnswerGates() {
+    const eased = game.gateProgress * game.gateProgress * (3 - 2 * game.gateProgress);
+    const z = lerp(0.09, 0.84, eased);
+    const y = roadY(z);
+    const laneWidth = (roadHalfWidth(z) * 2) / 3;
+    const width = clamp(laneWidth * 0.79, 44, viewWidth * 0.25);
+    const height = width * 0.9;
+    const fontSize = clamp(width * 0.34, 12, 48);
+
+    game.gateOrder.forEach((answer, lane) => {
+      const x = laneCenterX(lane, z) - width / 2;
+      const top = y - height;
+      ctx.save();
+      ctx.globalAlpha = clamp(0.55 + z, 0, 1);
+      ctx.fillStyle = '#0b0c2c77';
+      roundedRect(ctx, x + width * 0.06, top + height * 0.1, width, height, width * 0.13);
+      ctx.fill();
+      ctx.fillStyle = COLORS.laneDark[lane];
+      roundedRect(ctx, x, top, width, height, width * 0.13);
+      ctx.fill();
+      ctx.fillStyle = COLORS.lane[lane];
+      roundedRect(ctx, x + width * 0.07, top + width * 0.07, width * 0.86, height * 0.78, width * 0.1);
+      ctx.fill();
+      ctx.lineWidth = clamp(width * 0.06, 3, 8);
+      ctx.strokeStyle = 'white';
+      roundedRect(ctx, x, top, width, height, width * 0.13);
+      ctx.stroke();
+
+      // Dark sign plate maximizes AM / IS / ARE readability.
+      ctx.fillStyle = '#111344';
+      roundedRect(ctx, x + width * 0.1, top + height * 0.2, width * 0.8, height * 0.48, width * 0.08);
+      ctx.fill();
+      ctx.lineWidth = clamp(width * 0.025, 2, 4);
+      ctx.strokeStyle = '#fff';
+      ctx.stroke();
+      ctx.fillStyle = 'white';
+      ctx.font = `1000 ${fontSize}px Arial Rounded MT Bold, Arial, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(answer.toUpperCase(), x + width / 2, top + height * 0.44);
+
+      ctx.fillStyle = COLORS.yellow;
+      const arrowY = top + height * 0.78;
+      for (let arrow = -1; arrow <= 1; arrow += 1) {
+        ctx.beginPath();
+        ctx.moveTo(x + width / 2 + arrow * width * 0.18 - width * 0.05, arrowY);
+        ctx.lineTo(x + width / 2 + arrow * width * 0.18 + width * 0.05, arrowY);
+        ctx.lineTo(x + width / 2 + arrow * width * 0.18, arrowY + width * 0.07);
+        ctx.closePath();
+        ctx.fill();
+      }
+      ctx.restore();
+    });
+  }
+
+  function drawPlayer() {
+    const y = roadY(0.9) - Math.min(viewWidth, viewHeight) * 0.035;
+    const scale = clamp(Math.min(viewWidth, viewHeight) / 680, 0.72, 1.12);
+    const run = Math.sin(game.elapsed * 13) * 7;
+    ctx.save();
+    ctx.translate(game.playerX, y);
+    ctx.scale(scale, scale);
+
+    // Shadow
+    ctx.fillStyle = '#080b2e72';
+    ctx.beginPath();
+    ctx.ellipse(0, 7, 43, 14, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Legs
+    ctx.strokeStyle = '#15265f';
+    ctx.lineWidth = 13;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(-13, -36);
+    ctx.lineTo(-15 + run, -2);
+    ctx.moveTo(13, -36);
+    ctx.lineTo(15 - run, -2);
+    ctx.stroke();
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.moveTo(-15 + run, -2);
+    ctx.lineTo(-23 + run, 0);
+    ctx.moveTo(15 - run, -2);
+    ctx.lineTo(23 - run, 0);
+    ctx.stroke();
+
+    // Body and backpack
+    ctx.fillStyle = '#562bbd';
+    roundedRect(ctx, -30, -92, 60, 58, 15);
+    ctx.fill();
+    ctx.lineWidth = 5;
+    ctx.strokeStyle = 'white';
+    ctx.stroke();
+    ctx.fillStyle = '#ff6a49';
+    roundedRect(ctx, -24, -87, 48, 47, 12);
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.font = '1000 29px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('V', 0, -63);
+
+    // Arms
+    ctx.strokeStyle = '#ffd0a7';
+    ctx.lineWidth = 12;
+    ctx.beginPath();
+    ctx.moveTo(-27, -76);
+    ctx.lineTo(-39 - run * 0.35, -47);
+    ctx.moveTo(27, -76);
+    ctx.lineTo(39 + run * 0.35, -47);
+    ctx.stroke();
+
+    // Head and original hairstyle
+    ctx.fillStyle = '#ffd0a7';
+    ctx.beginPath();
+    ctx.arc(0, -118, 27, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = '#4d2b2a';
+    ctx.stroke();
+    ctx.fillStyle = '#24264b';
+    ctx.beginPath();
+    ctx.arc(-3, -128, 29, Math.PI, Math.PI * 2);
+    ctx.arc(16, -130, 14, Math.PI, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function drawStar(x, y, radius, fill, stroke) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.beginPath();
+    for (let point = 0; point < 10; point += 1) {
+      const angle = -Math.PI / 2 + point * Math.PI / 5;
+      const length = point % 2 === 0 ? radius : radius * 0.46;
+      const px = Math.cos(angle) * length;
+      const py = Math.sin(angle) * length;
+      if (point === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+    ctx.fillStyle = fill;
+    ctx.fill();
+    ctx.lineWidth = Math.max(1, radius * 0.16);
+    ctx.strokeStyle = stroke;
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  // ---------------------------------------------------------------------------
+  // Star particle effects
+  // ---------------------------------------------------------------------------
+  function createStarBurst(x, y, count) {
+    for (let index = 0; index < count; index += 1) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 60 + Math.random() * 170;
+      game.particles.push({
+        x,
+        y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - 80,
+        life: 0.7 + Math.random() * 0.55,
+        maxLife: 1.25,
+        radius: 6 + Math.random() * 8
+      });
+    }
+  }
+
+  function updateParticles(deltaSeconds) {
+    game.particles.forEach((particle) => {
+      particle.x += particle.vx * deltaSeconds;
+      particle.y += particle.vy * deltaSeconds;
+      particle.vy += 230 * deltaSeconds;
+      particle.life -= deltaSeconds;
+    });
+    game.particles = game.particles.filter((particle) => particle.life > 0);
+  }
+
+  function drawParticles() {
+    game.particles.forEach((particle) => {
+      ctx.globalAlpha = clamp(particle.life / particle.maxLife, 0, 1);
+      drawStar(particle.x, particle.y, particle.radius, '#fff05b', '#ff8b25');
+    });
+    ctx.globalAlpha = 1;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Lightweight generated sound effects (no external files)
+  // ---------------------------------------------------------------------------
+  function unlockAudio() {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return;
+    if (!audioContext) audioContext = new AudioContextClass();
+    if (audioContext.state === 'suspended') audioContext.resume();
+  }
+
+  function tone(frequency, duration, type = 'sine', delay = 0, gainAmount = 0.1) {
+    if (!audioContext) return;
+    const oscillator = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    oscillator.type = type;
+    oscillator.frequency.value = frequency;
+    const start = audioContext.currentTime + delay;
+    gain.gain.setValueAtTime(0.0001, start);
+    gain.gain.exponentialRampToValueAtTime(gainAmount, start + 0.012);
+    gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+    oscillator.connect(gain).connect(audioContext.destination);
+    oscillator.start(start);
+    oscillator.stop(start + duration + 0.03);
+  }
+
+  function playMoveSound() { tone(310, 0.07, 'triangle', 0, 0.06); }
+  function playReadySound() { tone(470, 0.09, 'triangle', 0, 0.08); tone(650, 0.11, 'triangle', 0.1, 0.08); }
+  function playSuccessSound() { tone(540, 0.12, 'triangle', 0, 0.12); tone(720, 0.14, 'triangle', 0.1, 0.12); tone(930, 0.2, 'triangle', 0.21, 0.12); }
+  function playIncorrectSound() { tone(210, 0.13, 'sawtooth', 0, 0.08); tone(145, 0.18, 'sawtooth', 0.13, 0.07); }
+
+  // ---------------------------------------------------------------------------
+  // Event wiring
+  // ---------------------------------------------------------------------------
+  document.querySelectorAll('.level').forEach((button) => {
+    button.addEventListener('click', () => {
+      document.querySelectorAll('.level').forEach((item) => item.classList.remove('selected'));
+      button.classList.add('selected');
+      game.level = button.dataset.level;
+    });
+  });
+
+  startButton.addEventListener('click', startGame);
+  restartButton.addEventListener('click', startGame);
+  changeLevelButton.addEventListener('click', returnToStart);
+  leftButton.addEventListener('pointerdown', (event) => { event.preventDefault(); moveLane(-1); });
+  rightButton.addEventListener('pointerdown', (event) => { event.preventDefault(); moveLane(1); });
+  pauseButton.addEventListener('click', pauseGame);
+  resumeButton.addEventListener('click', resumeGame);
+  window.addEventListener('keydown', onKeyDown, { passive: false });
+  canvas.addEventListener('pointerdown', onPointerDown);
+  canvas.addEventListener('pointerup', onPointerUp);
+  canvas.addEventListener('pointercancel', () => { pointerStart = null; });
+  window.addEventListener('resize', resizeCanvas);
+  window.addEventListener('orientationchange', () => setTimeout(resizeCanvas, 150));
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && ['reading', 'running'].includes(game.mode)) pauseGame();
+  });
+
+  // Read-only testing/teacher diagnostics. The engine still runs entirely from UI input.
+  window.verbToBeHuntDebug = {
+    getState: () => ({
+      mode: game.mode,
+      level: game.level,
+      score: game.score,
+      lives: game.lives,
+      correct: game.correct,
+      incorrect: game.incorrect,
+      questionId: game.currentQuestion?.id || null,
+      question: game.currentQuestion?.sentence || null,
+      answer: game.currentQuestion?.answer || null,
+      gateOrder: [...game.gateOrder],
+      correctLane: game.correctLane,
+      playerLane: game.playerLane,
+      gateProgress: Number(game.gateProgress.toFixed(3)),
+      hasMovedThisQuestion: game.hasMovedThisQuestion
+    }),
+    questionCount: (level) => questionsForLevel(level).length
+  };
+
+  resizeCanvas();
+  render();
+  requestAnimationFrame(frame);
+})();
+
+  </script>
 </body>
 </html>
