@@ -434,7 +434,7 @@ kbd { display: inline-grid; place-items: center; min-width: 29px; height: 27px; 
   right: max(10px, env(safe-area-inset-right));
   top: max(9px, env(safe-area-inset-top));
   display: grid;
-  grid-template-columns: minmax(105px, 1fr) minmax(330px, 3.8fr) minmax(105px, 1fr);
+  grid-template-columns: minmax(96px, .8fr) minmax(390px, 5fr) minmax(96px, .8fr);
   gap: 11px;
   align-items: start;
   pointer-events: none;
@@ -444,7 +444,7 @@ kbd { display: inline-grid; place-items: center; min-width: 29px; height: 27px; 
   position: absolute;
   z-index: 26;
   left: 50%;
-  top: max(98px, calc(env(safe-area-inset-top) + 92px));
+  top: max(120px, calc(env(safe-area-inset-top) + 114px));
   display: flex;
   align-items: center;
   gap: 7px;
@@ -469,9 +469,9 @@ kbd { display: inline-grid; place-items: center; min-width: 29px; height: 27px; 
 .hud-box small { display: block; margin-top: -2px; color: #c9f8ff; font-size: 11px; font-weight: 900; text-transform: uppercase; }
 .hud-box strong { display: block; color: var(--yellow); font-size: clamp(22px, 3vw, 35px); line-height: 1; }
 
-.question-card { position: relative; padding: 8px 14px 13px; overflow: hidden; }
-.question-card small { display: block; color: var(--yellow); font-size: 12px; font-weight: 1000; letter-spacing: .14em; }
-.question-card strong { display: block; margin-top: 1px; font-size: clamp(22px, 3.25vw, 43px); line-height: 1.05; text-wrap: balance; }
+.question-card { position: relative; min-height: 102px; padding: 8px 16px 15px; overflow: hidden; }
+.question-card small { display: block; color: var(--yellow); font-size: 13px; font-weight: 1000; letter-spacing: .14em; }
+.question-card strong { display: block; margin-top: 2px; font-size: clamp(31px, 4.45vw, 62px); line-height: 1.02; text-wrap: balance; text-shadow: 0 3px 0 #09082f; }
 .approach-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 7px; background: #09082f; }
 .approach-bar i { display: block; width: 0; height: 100%; background: linear-gradient(90deg, var(--cyan), var(--yellow), var(--orange)); transition: width .12s linear; }
 
@@ -511,7 +511,7 @@ kbd { display: inline-grid; place-items: center; min-width: 29px; height: 27px; 
   position: absolute;
   z-index: 30;
   right: max(12px, env(safe-area-inset-right));
-  top: 116px;
+  top: 139px;
   width: 45px;
   height: 45px;
   border: 3px solid white;
@@ -626,8 +626,9 @@ kbd { display: inline-grid; place-items: center; min-width: 29px; height: 27px; 
   .hud-box > span { display: none; }
   .hud-box strong { font-size: 24px; }
   .question-card { padding: 6px 8px 12px; border-width: 3px; }
-  .question-card strong { font-size: clamp(18px, 5.2vw, 31px); }
-  .pause-button { top: 96px; width: 40px; height: 40px; }
+  .question-card { min-height: 82px; }
+  .question-card strong { font-size: clamp(24px, 6vw, 37px); }
+  .pause-button { top: 112px; width: 40px; height: 40px; }
   .touch-controls { grid-template-columns: 70px 1fr 70px; gap: 8px; }
   .touch-controls button { width: 70px; height: 60px; }
   .difficulty { grid-template-columns: 1fr; max-width: 420px; }
@@ -644,7 +645,7 @@ kbd { display: inline-grid; place-items: center; min-width: 29px; height: 27px; 
   .wheel-wrap { width: min(43vh, 76vw); }
   .wheel-side { margin-top: 5px; }
   .remaining-groups { margin: 7px auto 12px; }
-  .tournament-hud { top: 86px; }
+  .tournament-hud { top: 102px; }
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
   .rank-row { grid-template-columns: 40px minmax(85px, 1fr) 63px 61px; }
   .rank-row > :last-child { display: none; }
@@ -669,6 +670,10 @@ kbd { display: inline-grid; place-items: center; min-width: 29px; height: 27px; 
   .visual-instructions > div { padding: 5px 8px; }
   .safety-note { margin-top: 8px; }
   .touch-controls button { height: 58px; }
+  .question-card { min-height: 82px; padding-top: 5px; }
+  .question-card strong { font-size: clamp(27px, 4vw, 45px); }
+  .tournament-hud { top: 94px; }
+  .pause-button { top: 105px; }
   .camera-card { padding: 11px 17px; }
   .camera-heading h2 { font-size: 21px; }
   .camera-heading p:last-child { margin-bottom: 7px; }
@@ -718,14 +723,14 @@ kbd { display: inline-grid; place-items: center; min-width: 29px; height: 27px; 
       <span id="groupsProgress">PLAYED 0 / 9</span>
     </div>
     <div id="laneAnnouncer" class="sr-only" aria-live="polite">Center lane</div>
-    <div id="gateAnnouncer" class="sr-only">Left AM, Center IS, Right ARE</div>
+    <div id="gateAnnouncer" class="sr-only">Answers arrive one at a time</div>
 
     <section id="startScreen" class="overlay start-screen">
       <div class="start-card">
         <div class="logo-orbit"><span>⭐</span><i></i><b>V</b></div>
         <p class="eyebrow">9-GROUP BODY TOURNAMENT</p>
         <h1>VERB TO BE<br><span>HUNT</span></h1>
-        <p class="tagline">Spin <b>•</b> Run <b>•</b> Score!</p>
+        <p class="tagline">Spin <b>•</b> Dodge <b>•</b> Find!</p>
 
         <div class="nine-groups" aria-label="Nine competing groups">
           <span>G1</span><span>G2</span><span>G3</span><span>G4</span><span>G5</span><span>G6</span><span>G7</span><span>G8</span><span>G9</span>
@@ -744,7 +749,7 @@ kbd { display: inline-grid; place-items: center; min-width: 29px; height: 27px; 
         </div>
 
         <button id="startButton" class="primary-button">START 9-GROUP TOURNAMENT <span>🎡</span></button>
-        <p class="safety-note">4 เซ็ต • เซ็ตละ 2 ข้อ • ผู้เล่น 4 คนสลับกัน • ตั้งกล้องเพียงครั้งเดียว</p>
+        <p class="safety-note">คำตอบมาทีละคำ: หลบคำผิดและวิ่งไปรับคำถูก • 4 เซ็ต เซ็ตละ 2 ข้อ • ตั้งกล้องเพียงครั้งเดียว</p>
       </div>
     </section>
 
@@ -993,9 +998,11 @@ window.VERB_TO_BE_QUESTIONS = [
   const QUESTIONS_PER_GROUP = QUESTIONS_PER_SET * SETS_PER_GROUP;
   const START_LIVES = QUESTIONS_PER_GROUP;
   const WHEEL_SPIN_MS = 4400;
-  const READ_SECONDS = 2.4;
-  const APPROACH_SECONDS = 3.8;
+  const READ_SECONDS = 1.7;
+  const APPROACH_SECONDS = 4.5;
   const FEEDBACK_SECONDS = 0.8;
+  const ANSWER_TRAVEL_SECONDS = 2.2;
+  const ANSWER_SPAWN_TIMES = [-1, 0.45, 1.9];
   const INPUT_COOLDOWN_MS = 165;
   const POSE_FRAME_INTERVAL_MS = 72;
   const POSE_LOST_GRACE_MS = 850;
@@ -1056,12 +1063,17 @@ window.VERB_TO_BE_QUESTIONS = [
     questionDeck: [],
     lastQuestionId: null,
     gateOrder: [...ANSWERS],
+    answerWave: [],
     correctLane: 1,
     playerLane: 1,
     targetLane: 1,
     playerX: 0,
     readRemaining: READ_SECONDS,
     gateProgress: 0,
+    waveElapsed: 0,
+    waveMessageRemaining: 0,
+    correctCollected: false,
+    wrongCollision: false,
     hasMovedThisQuestion: true,
     waitingForMove: false,
     feedbackRemaining: 0,
@@ -1384,6 +1396,25 @@ window.VERB_TO_BE_QUESTIONS = [
     return question;
   }
 
+  function createAnswerWave(correctAnswer) {
+    const wrongAnswers = shuffled(ANSWERS.filter((answer) => answer !== correctAnswer));
+    const correctSlot = Math.random() < 0.5 ? 1 : 2;
+    const arrivalOrder = [];
+    let wrongIndex = 0;
+    for (let slot = 0; slot < ANSWERS.length; slot += 1) {
+      if (slot === correctSlot) arrivalOrder.push(correctAnswer);
+      else arrivalOrder.push(wrongAnswers[wrongIndex++]);
+    }
+
+    const lanes = shuffled([0, 1, 2]);
+    return arrivalOrder.map((answer, index) => ({
+      answer,
+      lane: lanes[index],
+      spawnAt: ANSWER_SPAWN_TIMES[index],
+      resolved: false
+    }));
+  }
+
   // ---------------------------------------------------------------------------
   // Game flow and score system
   // ---------------------------------------------------------------------------
@@ -1430,27 +1461,33 @@ window.VERB_TO_BE_QUESTIONS = [
     game.currentSet = Math.min(SETS_PER_GROUP, Math.floor((game.questionNumber - 1) / QUESTIONS_PER_SET) + 1);
     game.currentPlayer = game.currentSet;
     game.currentQuestion = nextQuestion();
-    game.gateOrder = shuffled(ANSWERS);
-    game.correctLane = game.gateOrder.indexOf(game.currentQuestion.answer);
+    game.answerWave = createAnswerWave(game.currentQuestion.answer);
+    game.gateOrder = game.answerWave.map((item) => item.answer);
+    game.correctLane = game.answerWave.find((item) => item.answer === game.currentQuestion.answer)?.lane ?? 1;
     game.playerLane = 1;
     game.targetLane = 1;
     game.playerX = laneCenterX(1, 0.9);
     game.readRemaining = READ_SECONDS;
     game.gateProgress = 0;
+    game.waveElapsed = 0;
+    game.waveMessageRemaining = 0;
+    game.correctCollected = false;
+    game.wrongCollision = false;
     game.hasMovedThisQuestion = true;
     game.waitingForMove = false;
     game.mode = 'reading';
     questionText.textContent = game.currentQuestion.sentence;
     laneAnnouncer.textContent = 'Center lane';
-    gateAnnouncer.textContent = `Left ${game.gateOrder[0].toUpperCase()}, Center ${game.gateOrder[1].toUpperCase()}, Right ${game.gateOrder[2].toUpperCase()}`;
+    gateAnnouncer.textContent = game.answerWave.map((item, index) => (
+      `${['First', 'Next', 'Last'][index]} ${['left', 'center', 'right'][item.lane]} ${item.answer.toUpperCase()}`
+    )).join(', ');
     phaseLabel.textContent = `READ ${Math.ceil(READ_SECONDS)}`;
     approachBar.style.width = '0%';
     updateHud();
   }
 
-  function evaluateAnswer() {
+  function evaluateAnswer(selectedAnswer, collisionLane = game.playerLane) {
     if (game.mode !== 'running') return;
-    const selectedAnswer = game.gateOrder[game.playerLane];
     const isCorrect = selectedAnswer === game.currentQuestion.answer;
     game.mode = 'feedback';
     game.feedbackRemaining = FEEDBACK_SECONDS;
@@ -1459,7 +1496,7 @@ window.VERB_TO_BE_QUESTIONS = [
     if (isCorrect) {
       game.score += POINTS_PER_CORRECT;
       game.correct += 1;
-      createStarBurst(laneCenterX(game.playerLane, 0.83), roadY(0.83), 22);
+      createStarBurst(laneCenterX(collisionLane, 0.83), roadY(0.83), 22);
       showFeedback(true);
       playSuccessSound();
     } else {
@@ -2041,12 +2078,43 @@ window.VERB_TO_BE_QUESTIONS = [
       phaseLabel.textContent = `READ ${Math.max(1, Math.ceil(game.readRemaining))}`;
       if (game.readRemaining <= 0) {
         game.mode = 'running';
-        phaseLabel.textContent = 'CHOOSE!';
+        phaseLabel.textContent = 'DODGE & FIND!';
         playReadySound();
       }
     } else if (game.mode === 'running') {
-      game.gateProgress += deltaSeconds / APPROACH_SECONDS;
-      if (game.gateProgress >= 1) evaluateAnswer();
+      game.waveElapsed += deltaSeconds;
+      game.gateProgress = game.waveElapsed / APPROACH_SECONDS;
+      if (game.waveMessageRemaining > 0) {
+        game.waveMessageRemaining -= deltaSeconds;
+        if (game.waveMessageRemaining <= 0) phaseLabel.textContent = 'DODGE & FIND!';
+      }
+      for (const item of game.answerWave) {
+        if (item.resolved) continue;
+        const itemProgress = (game.waveElapsed - item.spawnAt) / ANSWER_TRAVEL_SECONDS;
+        if (itemProgress < 1) continue;
+        item.resolved = true;
+        if (game.playerLane === item.lane) {
+          if (item.answer === game.currentQuestion.answer) {
+            game.correctCollected = true;
+            createStarBurst(laneCenterX(item.lane, 0.83), roadY(0.83), 14);
+            phaseLabel.textContent = 'GOT IT! KEEP MOVING';
+            game.waveMessageRemaining = 0.7;
+            playCollectSound();
+          } else {
+            game.wrongCollision = true;
+            game.shake = Math.max(game.shake, 0.34);
+            phaseLabel.textContent = 'BUMP! KEEP MOVING';
+            game.waveMessageRemaining = 0.7;
+            playBumpSound();
+          }
+        } else {
+          playDodgeSound();
+        }
+      }
+      if (game.waveElapsed >= APPROACH_SECONDS) {
+        const passed = game.correctCollected && !game.wrongCollision;
+        evaluateAnswer(passed ? game.currentQuestion.answer : null, game.correctLane);
+      }
       approachBar.style.width = `${clamp(game.gateProgress, 0, 1) * 100}%`;
     } else if (game.mode === 'feedback') {
       game.feedbackRemaining -= deltaSeconds;
@@ -2104,7 +2172,7 @@ window.VERB_TO_BE_QUESTIONS = [
     drawRoad();
     drawRoadsideObjects();
     drawCollectibleStars();
-    if (game.currentQuestion && game.mode !== 'start' && game.mode !== 'gameover') drawAnswerGates();
+    if (game.currentQuestion && ['reading', 'running'].includes(game.mode)) drawAnswerGates();
     if (game.mode !== 'start' && game.mode !== 'gameover') drawPlayer();
     drawParticles();
     ctx.restore();
@@ -2287,15 +2355,19 @@ window.VERB_TO_BE_QUESTIONS = [
   }
 
   function drawAnswerGates() {
-    const eased = game.gateProgress * game.gateProgress * (3 - 2 * game.gateProgress);
-    const z = lerp(0.09, 0.84, eased);
-    const y = roadY(z);
-    const laneWidth = (roadHalfWidth(z) * 2) / 3;
-    const width = clamp(laneWidth * 0.79, 44, viewWidth * 0.25);
-    const height = width * 0.9;
-    const fontSize = clamp(width * 0.34, 12, 48);
-
-    game.gateOrder.forEach((answer, lane) => {
+    game.answerWave.forEach((item, waveIndex) => {
+      if (item.resolved) return;
+      const travelProgress = (game.waveElapsed - item.spawnAt) / ANSWER_TRAVEL_SECONDS;
+      if (travelProgress < 0) return;
+      const eased = clamp(travelProgress, 0, 1);
+      const smooth = eased * eased * (3 - 2 * eased);
+      const z = lerp(0.08, 0.87, smooth);
+      const y = roadY(z);
+      const laneWidth = (roadHalfWidth(z) * 2) / 3;
+      const width = clamp(laneWidth * 0.77, 42, viewWidth * 0.235);
+      const height = width * 0.82;
+      const fontSize = clamp(width * 0.36, 13, 52);
+      const lane = item.lane;
       const x = laneCenterX(lane, z) - width / 2;
       const top = y - height;
       ctx.save();
@@ -2325,7 +2397,7 @@ window.VERB_TO_BE_QUESTIONS = [
       ctx.font = `1000 ${fontSize}px Arial Rounded MT Bold, Arial, sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(answer.toUpperCase(), x + width / 2, top + height * 0.44);
+      ctx.fillText(item.answer.toUpperCase(), x + width / 2, top + height * 0.44);
 
       ctx.fillStyle = COLORS.yellow;
       const arrowY = top + height * 0.78;
@@ -2337,6 +2409,15 @@ window.VERB_TO_BE_QUESTIONS = [
         ctx.closePath();
         ctx.fill();
       }
+
+      const orderRadius = clamp(width * 0.12, 10, 22);
+      ctx.fillStyle = '#fff';
+      ctx.beginPath();
+      ctx.arc(x + width * 0.12, top + height * 0.1, orderRadius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#17105c';
+      ctx.font = `1000 ${clamp(orderRadius * 1.05, 10, 22)}px Arial Rounded MT Bold, Arial, sans-serif`;
+      ctx.fillText(String(waveIndex + 1), x + width * 0.12, top + height * 0.1 + 1);
       ctx.restore();
     });
   }
@@ -2499,6 +2580,9 @@ window.VERB_TO_BE_QUESTIONS = [
   }
 
   function playMoveSound() { tone(310, 0.07, 'triangle', 0, 0.06); }
+  function playDodgeSound() { tone(360, 0.055, 'triangle', 0, 0.035); }
+  function playCollectSound() { tone(620, 0.08, 'triangle', 0, 0.07); tone(840, 0.11, 'triangle', 0.07, 0.07); }
+  function playBumpSound() { tone(190, 0.08, 'sawtooth', 0, 0.05); }
   function playReadySound() { tone(470, 0.09, 'triangle', 0, 0.08); tone(650, 0.11, 'triangle', 0.1, 0.08); }
   function playSuccessSound() { tone(540, 0.12, 'triangle', 0, 0.12); tone(720, 0.14, 'triangle', 0.1, 0.12); tone(930, 0.2, 'triangle', 0.21, 0.12); }
   function playIncorrectSound() { tone(210, 0.13, 'sawtooth', 0, 0.08); tone(145, 0.18, 'sawtooth', 0.13, 0.07); }
@@ -2562,9 +2646,12 @@ window.VERB_TO_BE_QUESTIONS = [
       question: game.currentQuestion?.sentence || null,
       answer: game.currentQuestion?.answer || null,
       gateOrder: [...game.gateOrder],
+      answerWave: game.answerWave.map((item) => ({ answer: item.answer, lane: item.lane, spawnAt: item.spawnAt, resolved: item.resolved })),
       correctLane: game.correctLane,
       playerLane: game.playerLane,
       gateProgress: Number(game.gateProgress.toFixed(3)),
+      correctCollected: game.correctCollected,
+      wrongCollision: game.wrongCollision,
       hasMovedThisQuestion: game.hasMovedThisQuestion,
       camera: {
         tracked: camera.tracked,
